@@ -1,0 +1,26 @@
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\TorrentClient.exe.config
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\TorrentClient.exe
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\TorrentClient.pdb
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\Mono.Nat.dll
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\MonoTorrent.dll
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\ReusableTasks.dll
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\Mono.Nat.xml
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\MonoTorrent.xml
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\ReusableTasks.xml
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.csprojAssemblyReference.cache
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.csproj.CoreCompileInputs.cache
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.csproj.CopyComplete
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.exe
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.pdb
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\PM.torrent
+C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\uTorrent.exe.torrent
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\PM.torrent
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\uTorrent.exe.torrent
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.exe.config
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.exe
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.pdb
+C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.csproj.CopyComplete
+C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.exe
+C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.pdb
+C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.csprojAssemblyReference.cache
