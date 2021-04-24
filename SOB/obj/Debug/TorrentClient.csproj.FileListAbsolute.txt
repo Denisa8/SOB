@@ -14,7 +14,6 @@ C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.
 C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.pdb
 C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\PM.torrent
 C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\uTorrent.exe.torrent
-C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\PM.torrent
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\uTorrent.exe.torrent
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.exe.config
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.exe
@@ -24,3 +23,5 @@ C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.csproj.CopyComp
 C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.exe
 C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.pdb
 C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.csprojAssemblyReference.cache
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\MiscUtil.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\MiscUtil.xml

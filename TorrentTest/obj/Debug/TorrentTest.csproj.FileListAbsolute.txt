@@ -1,0 +1,15 @@
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\uTorrent.exe.torrent
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TorrentTest.exe.config
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TorrentTest.exe
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TorrentTest.pdb
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TorrentClient.exe
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\MonoTorrent.dll
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\ReusableTasks.dll
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\Mono.Nat.dll
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TorrentClient.pdb
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TorrentClient.exe.config
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.csprojAssemblyReference.cache
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.csproj.CopyComplete
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.exe
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.pdb

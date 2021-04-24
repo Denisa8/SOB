@@ -1,6 +1,4 @@
 ﻿using MonoTorrent;
-using MonoTorrent.Client;
-using MonoTorrent.Client.PiecePicking;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -8,14 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Security.Cryptography;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
+using TorrentClient;
 
-namespace TorrentClient
+namespace TorrentTest
 {
     class Program
-    {  
+    {
         static TorrentFileInfo torrentFileInfo = new TorrentFileInfo();
         private static TcpListener listener { get; set; }
         public static ConcurrentDictionary<int, Peer> Peers { get; } = new ConcurrentDictionary<int, Peer>();
@@ -24,20 +22,20 @@ namespace TorrentClient
         private static void EnablePeerConnections(int Port)
         {
             port = Port;
+
             listener = new TcpListener(new IPEndPoint(IPAddress.Any, Port));
             listener.Start();
-            listener.BeginAcceptTcpClient(new AsyncCallback(HandlePeerConnection), null);
+            listener.BeginAcceptTcpClient(new AsyncCallback(HandleNewConnection), null);
         }
 
-        private static void HandlePeerConnection(IAsyncResult ar)
+        private static void HandleNewConnection(IAsyncResult ar)
         {
             if (listener == null)
                 return;
 
             TcpClient client = listener.EndAcceptTcpClient(ar);
-            listener.BeginAcceptTcpClient(new AsyncCallback(HandlePeerConnection), null);
+            listener.BeginAcceptTcpClient(new AsyncCallback(HandleNewConnection), null);
             Console.WriteLine("DODANO " + port);
-
             AddPeer(new Peer(client,torrentFileInfo));
         }
         private static void AddPeer(Peer peer)
@@ -53,7 +51,7 @@ namespace TorrentClient
             var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads");
             var torrentsPath = "uTorrent.exe.torrent";
             if (!Directory.Exists(filePath))
-                Directory.CreateDirectory(filePath); 
+                Directory.CreateDirectory(filePath);
             if (torrentsPath.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase))
             {
                 try
@@ -63,32 +61,37 @@ namespace TorrentClient
                     torrentFileInfo.PiecesLength = torrent.PieceLength;
                     torrentFileInfo.PiecesCount = torrent.Pieces.Count;
                     torrentFileInfo.PieceHashes = new byte[torrentFileInfo.PiecesCount][];
-                    torrentFileInfo.PathSource = @"C:\Users\Admin\Desktop\uTorrent.exe";
-                    torrentFileInfo.PathNew = @"c:\Users\Admin\Desktop\uTorrent4.exe"; 
-                    EnablePeerConnections(1300);
+                    torrentFileInfo.PathSource = @"C:\Users\Admin\Desktop\uTorrent2.exe";
+                    torrentFileInfo.PathNew = @"c:\Users\Admin\Desktop\uTorrent6.xe";
+
+                    EnablePeerConnections(1301);
+
                     Peer p1 = new Peer(torrentFileInfo);
-                    p1.ConnectToPeer(1301); 
-                    while (!p1.IsConnected && !Peers.Any()) { }
-                    for (int i=0;i< torrent.Pieces.Count; i++)
+                    p1.ConnectToPeer(1300);
+                    while (!p1.IsConnected&& !Peers.Any())
+                    { }
+                    for (int i = 0; i < torrent.Pieces.Count; i++)
                     {
                         var byteResult = torrent.Pieces.ReadHash(i);
                         torrentFileInfo.PieceHashes[i] = byteResult;
-                        Piece p = torrentFileInfo.ReadFilePiece(i);
-                        if (p == null)
-                            continue;
-                        p1.SendPiece(p);
-                        Thread.Sleep(250);
+                        //var bytes = torrentFileInfo.ReadFilePiece(i);
+                        //Piece p = new Piece();
+                        //p.index = i;
+                        //p.data = bytes;
+                        //p1.SendP`iece(p);
                         //torrentFileInfo.WriteFilePiece(i,bytes); 
                     }
-                    Console.ReadLine(); 
+                    while (true)
+                    {
+
+                    }
+                    Console.ReadLine();
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine(e.Message);
                 }
             }
-            Console.ReadKey();
         }
-        
-    }
+    } 
 }

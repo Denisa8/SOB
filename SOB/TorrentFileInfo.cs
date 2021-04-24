@@ -15,9 +15,10 @@ namespace TorrentClient
         public string PathSource { get; set; }
         public string PathNew { get; set; }
 
+        static object lockObject = new object();
 
         public bool CheckReceivedPiece(byte[] bytes, int index, int receivedBytes)
-        { 
+        {
             if (receivedBytes > PiecesLength)
             {
                 Console.WriteLine("Otrzymano za dużo danych.");
@@ -25,7 +26,7 @@ namespace TorrentClient
             }
             else if (receivedBytes < PiecesLength)
             {
-                byte[] truncArray = new byte[receivedBytes]; 
+                byte[] truncArray = new byte[receivedBytes];
                 Array.Copy(bytes, truncArray, truncArray.Length);
                 var rs = CheckHash(truncArray, index);
                 return rs;
@@ -45,46 +46,30 @@ namespace TorrentClient
             Console.WriteLine("Otrzymano prawidłowy fragment.");
             return true;
         }
-        public void ReadFilePiece(int index)
+        public Piece ReadFilePiece(int index)
         {
             try
             {
-                //using (FileStream fsSource = new FileStream(PathSource,
-                //    FileMode.Open, FileAccess.Read))
-                //{
+                Piece p = new Piece();
+                p.index = index;
                 byte[] bytes = new byte[PiecesLength];
                 int numBytesToRead = PiecesLength;
-                long numBytesRead = index * PiecesLength;
-                //if (numBytesRead != 0)
-                //    numBytesRead += 1;
+                long numBytesRead = index * PiecesLength; 
                 using (BinaryReader reader = new BinaryReader(new FileStream(PathSource, FileMode.Open)))
                 {
                     reader.BaseStream.Seek(numBytesRead, SeekOrigin.Begin);
                     var receivedBytes = reader.Read(bytes, 0, numBytesToRead);
+                    p.length = receivedBytes;
                     Console.WriteLine(receivedBytes);
-                    CheckReceivedPiece(bytes,index,receivedBytes);
+                    p.data = bytes;
+                    CheckReceivedPiece(bytes, index, receivedBytes);
                 }
-                //while (numBytesToRead > 0)
-                //{
-                //    int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
-                //    if (n == 0)
-                //        break;
-                //    CheckReceivedPiece(bytes);
-                //    numBytesRead += n;
-                //    numBytesToRead -= n;
-                //}
-                //numBytesToRead = bytes.Length;
-
-                //using (FileStream fsNew = new FileStream(pathNew,
-                //    FileMode.Create, FileAccess.Write))
-                //{
-                //    fsNew.Write(bytes, 0, numBytesToRead);
-                //}
-                //}
+                return p;
             }
             catch (FileNotFoundException ioEx)
             {
                 Console.WriteLine(ioEx.Message);
+                return null;
             }
         }
         public void SendFilePiece(int index)
@@ -135,6 +120,28 @@ namespace TorrentClient
             using (SHA1Managed sha1 = new SHA1Managed())
             {
                 return sha1.ComputeHash(temp);
+            }
+        }
+
+        public void WriteFilePiece(int index, byte[] bytes)
+        {
+            try
+            {
+                CheckReceivedPiece(bytes, index, bytes.Length);
+                long numBytesRead = index * PiecesLength;
+                lock (lockObject)
+                {
+                    using (Stream stream = new FileStream(PathNew, FileMode.OpenOrCreate, FileAccess.ReadWrite, System.IO.FileShare.ReadWrite | 
+                        System.IO.FileShare.Read | System.IO.FileShare.Write | System.IO.FileShare.Delete))
+                    {
+                        stream.Seek(numBytesRead, SeekOrigin.Begin);
+                        stream.Write(bytes, 0, bytes.Length);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
     }

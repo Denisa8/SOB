@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1FAA000B-1ECB-4A66-9299-DB22C01908FC}</ProjectGuid>
+    <ProjectGuid>{C81A0B07-7C5A-4EDF-97A5-071C3F52C81D}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TorrentClient</RootNamespace>
-    <AssemblyName>TorrentClient</AssemblyName>
+    <RootNamespace>TorrentTest</RootNamespace>
+    <AssemblyName>TorrentTest</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -33,17 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MiscUtil, Version=0.2.0.0, Culture=neutral, PublicKeyToken=d3c42c4bfacf7596, processorArchitecture=MSIL">
-      <HintPath>packages\JonSkeet.MiscUtil.0.2.0\lib\net35\MiscUtil.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.Nat, Version=3.0.0.0, Culture=neutral, PublicKeyToken=6c9468a3c21bc6d1, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Nat.3.0.1\lib\netstandard2.0\Mono.Nat.dll</HintPath>
-    </Reference>
     <Reference Include="MonoTorrent, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MonoTorrent.1.0.29\lib\netstandard2.0\MonoTorrent.dll</HintPath>
-    </Reference>
-    <Reference Include="ReusableTasks, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ReusableTasks.2.0.0\lib\netstandard2.0\ReusableTasks.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SOB\bin\Debug\MonoTorrent.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,18 +47,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Peer.cs" />
-    <Compile Include="Piece.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TorrentFileInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
     <None Include="uTorrent.exe.torrent">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SOB\TorrentClient.csproj">
+      <Project>{1FAA000B-1ECB-4A66-9299-DB22C01908FC}</Project>
+      <Name>TorrentClient</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
