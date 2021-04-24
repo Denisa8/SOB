@@ -13,3 +13,4 @@ C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.csproj.Co
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.csproj.CopyComplete
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.exe
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.pdb
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TO.torrent

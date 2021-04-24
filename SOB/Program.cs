@@ -51,7 +51,7 @@ namespace TorrentClient
         static async Task Main(string[] args)
         {
             var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads");
-            var torrentsPath = "uTorrent.exe.torrent";
+            var torrentsPath = "TO.torrent";
             if (!Directory.Exists(filePath))
                 Directory.CreateDirectory(filePath); 
             if (torrentsPath.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase))
@@ -63,8 +63,8 @@ namespace TorrentClient
                     torrentFileInfo.PiecesLength = torrent.PieceLength;
                     torrentFileInfo.PiecesCount = torrent.Pieces.Count;
                     torrentFileInfo.PieceHashes = new byte[torrentFileInfo.PiecesCount][];
-                    torrentFileInfo.PathSource = @"C:\Users\Admin\Desktop\uTorrent.exe";
-                    torrentFileInfo.PathNew = @"c:\Users\Admin\Desktop\uTorrent4.exe"; 
+                    torrentFileInfo.PathSource = @"C:\Users\Admin\Desktop\TO.mp4";
+                    torrentFileInfo.PathNew = @"c:\Users\Admin\Desktop\TO2.mp4"; 
                     EnablePeerConnections(1300);
                     Peer p1 = new Peer(torrentFileInfo);
                     p1.ConnectToPeer(1301); 
@@ -74,11 +74,13 @@ namespace TorrentClient
                         var byteResult = torrent.Pieces.ReadHash(i);
                         torrentFileInfo.PieceHashes[i] = byteResult;
                         Piece p = torrentFileInfo.ReadFilePiece(i);
+                        if (i == 291)
+                            Console.WriteLine("XD");
                         if (p == null)
                             continue;
                         p1.SendPiece(p);
                         Thread.Sleep(250);
-                        //torrentFileInfo.WriteFilePiece(i,bytes); 
+                        //torrentFileInfo.WriteFilePiece(i,p.data); 
                     }
                     Console.ReadLine(); 
                 }

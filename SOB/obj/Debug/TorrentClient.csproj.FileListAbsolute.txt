@@ -25,3 +25,4 @@ C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.pdb
 C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.csprojAssemblyReference.cache
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\MiscUtil.dll
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\MiscUtil.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TO.torrent

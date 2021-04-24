@@ -64,6 +64,9 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="TO.torrent">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="uTorrent.exe.torrent">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
