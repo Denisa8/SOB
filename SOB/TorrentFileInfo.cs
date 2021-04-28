@@ -7,6 +7,7 @@ namespace TorrentClient
 {
     public class TorrentFileInfo
     {
+        public string TrackerUrl { get; set; } 
         public int TorrentsPath { get; set; }
         public int TorrentHash { get; set; }
         public byte[][] PieceHashes { get; set; }

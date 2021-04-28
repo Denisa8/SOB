@@ -14,7 +14,6 @@ C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.
 C:\Users\Admin\source\repos\TorrentClient\TorrentClient\obj\Debug\TorrentClient.pdb
 C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\PM.torrent
 C:\Users\Admin\source\repos\TorrentClient\TorrentClient\bin\Debug\uTorrent.exe.torrent
-C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\uTorrent.exe.torrent
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.exe.config
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.exe
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentClient.pdb
@@ -26,3 +25,6 @@ C:\Users\Admin\Desktop\SOB - projekt\SOB\obj\Debug\TorrentClient.csprojAssemblyR
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\MiscUtil.dll
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\MiscUtil.xml
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TO.torrent
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\ster_01.torrent
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\wyklady.torrent
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\wyklady2.torrent

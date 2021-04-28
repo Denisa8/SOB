@@ -14,3 +14,6 @@ C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.csproj.Co
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.exe
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\obj\Debug\TorrentTest.pdb
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\TO.torrent
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\ster_01.torrent
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\wyklady.torrent
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTest\bin\Debug\wyklady2.torrent

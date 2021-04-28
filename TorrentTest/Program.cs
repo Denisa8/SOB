@@ -46,10 +46,15 @@ namespace TorrentTest
             if (!Peers.TryAdd(rand.Next(), peer))
                 peer.Disconnect();
         }
+        public static string torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+        public static string PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
+        public static string PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia.zip";
+        //public static string torrentsPath = "wyklady.torrent";
+        //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
+        //public static string PathNew = @"c:\Users\Admin\Desktop\wyklady2.zip";
         static async Task Main(string[] args)
         {
-            var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads");
-            var torrentsPath = "TO.torrent";
+            var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads"); 
             if (!Directory.Exists(filePath))
                 Directory.CreateDirectory(filePath);
             if (torrentsPath.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase))
@@ -61,8 +66,8 @@ namespace TorrentTest
                     torrentFileInfo.PiecesLength = torrent.PieceLength;
                     torrentFileInfo.PiecesCount = torrent.Pieces.Count;
                     torrentFileInfo.PieceHashes = new byte[torrentFileInfo.PiecesCount][];
-                    torrentFileInfo.PathSource = @"C:\Users\Admin\Desktop\TO2.mp4";
-                    torrentFileInfo.PathNew = @"c:\Users\Admin\Desktop\TO6.mp4";
+                    torrentFileInfo.PathSource = PathSource;
+                    torrentFileInfo.PathNew = PathNew;
 
                     EnablePeerConnections(1301);
                     for (int i = 0; i < torrent.Pieces.Count; i++)
