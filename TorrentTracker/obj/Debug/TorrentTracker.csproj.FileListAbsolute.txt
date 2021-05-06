@@ -1,0 +1,7 @@
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\Debug\TorrentTracker.exe.config
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\Debug\TorrentTracker.exe
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\Debug\TorrentTracker.pdb
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.csprojAssemblyReference.cache
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.csproj.CoreCompileInputs.cache
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.exe
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.pdb
