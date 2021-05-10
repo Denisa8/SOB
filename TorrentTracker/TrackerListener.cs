@@ -8,7 +8,7 @@ using TorrentTracker.Data;
 
 namespace TorrentTracker
 {
-    public delegate void PortClientCallback(TcpClient client,int port,List<int> receivePieces);
+    public delegate void PortClientCallback(TcpClient client,int port,List<int> receivePieces,Guid guid);
 
     public class TrackerListener
     {
@@ -31,7 +31,7 @@ namespace TorrentTracker
                     var client = listener.AcceptTcpClient();
                     var stream = client.GetStream();
                     var ob = Tools.Receive(stream).TryCast<PortToConnectToPeer>();
-                    PortClientCallback(client, ob.Port,ob.Pieces);
+                    PortClientCallback(client, ob.Port,ob.Pieces,ob.Guid);
                 }
                 catch (SocketException) { }
                 catch (InvalidCastException e) {

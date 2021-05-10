@@ -32,9 +32,9 @@ namespace TorrentTracker
                 }
             } 
         }
-        public int[] Pieces { 
+        public List<int> Pieces { 
             get { 
-                pieces.Sort(); return pieces.ToArray(); 
+                pieces.Sort(); return pieces; 
             } 
         }
 
@@ -44,9 +44,9 @@ namespace TorrentTracker
         private RemovePeerCallBack RemovePeerCallBack;
         private Thread thread;
 
-        public PeerStatus(TcpClient peer, int peerPort, RemovePeerCallBack remove, List<int> pieces)
+        public PeerStatus(TcpClient peer, int peerPort, RemovePeerCallBack remove, List<int> pieces,Guid guid)
         {
-            ID = Guid.NewGuid();
+            ID = guid;
             client = peer;
             IP = ((IPEndPoint)peer.Client.RemoteEndPoint).Address.ToString();
             Available = true;
@@ -79,7 +79,7 @@ namespace TorrentTracker
         public void InformAboutNewPeer(PeerStatus peer)
         {
             var stream = client.GetStream();
-            new TransportObject(new NewPeer(peer.IP,peer.Port)).SendObject(stream);
+            new TransportObject(new NewPeer(peer.IP,peer.Port,peer.Pieces)).SendObject(stream);
         }
 
         private void InformPeerAboutAvailable()
@@ -94,7 +94,8 @@ namespace TorrentTracker
             List<PeerListElement> list = new List<PeerListElement>();
             foreach(var peer in peers)
             {
-                list.Add(new PeerListElement(peer.IP, peer.Port));
+                if(peer.Available)
+                    list.Add(new PeerListElement(peer.IP, peer.Port,peer.pieces,peer.ID));
             }
             new TransportObject(list).SendObject(stream);
         }

@@ -60,12 +60,18 @@ namespace TorrentTracker
             }
         }
 
-        private void AddPeer(TcpClient client, int port,List<int> pieces)
+        private void AddPeer(TcpClient client, int port,List<int> pieces,Guid guid)
         {
-            PeerStatus status = new PeerStatus(client, port, Remove, pieces);
+            PeerStatus status = new PeerStatus(client, port, Remove, pieces,guid);
             status.SendPeerList(peers);
             foreach (var peer in peers)
                 peer.InformAboutNewPeer(status);
+            if(peers.Count(x=>x.ID == guid)==1)
+            {
+                var p = peers.First(x => x.ID == guid);
+                p.Close();
+                peers.Remove(p);
+            }
             peers.Add(status);
         }
 

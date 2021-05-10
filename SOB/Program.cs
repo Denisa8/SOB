@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using TorrentTracker.Data;
 
 namespace TorrentClient
 {
@@ -20,6 +21,10 @@ namespace TorrentClient
         private static TcpListener listener { get; set; }
         public static ConcurrentDictionary<int, Peer> Peers { get; } = new ConcurrentDictionary<int, Peer>();
         private static int port { get; set; }
+        private static Guid ID = Guid.NewGuid();
+        public static TcpClient clientTracker { get; private set; }
+        public static bool Available { get; set; } = true;
+        static Thread threadListen;
 
         private static void EnablePeerConnections(int Port)
         {
@@ -57,6 +62,11 @@ namespace TorrentClient
         //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
         //public static string PathNew = @"c:\Users\Admin\Desktop\wyklady3.zip";
 
+        static void ReceivePeerList(List<PeerListElement> peerLists)
+        {
+
+        }
+
         static async Task Main(string[] args)
         {
             var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads"); 
@@ -76,6 +86,19 @@ namespace TorrentClient
                     torrentFileInfo.PathSource = PathSource;
                     torrentFileInfo.PathNew = PathNew; 
                     EnablePeerConnections(1300);
+
+                    clientTracker = new TcpClient();
+                    clientTracker.Connect("127.0.0.1", 60000);
+                    var stream = clientTracker.GetStream();
+                    List<int> pieces = new List<int>();
+                    for (int i = 0; i < torrent.Pieces.Count; i++) pieces.Add(i);
+                    PortToConnectToPeer connSettings = new PortToConnectToPeer(1300, pieces, ID);
+                    TransportObject ob = new TransportObject(connSettings);
+                    ob.SendObject(stream);
+                    ClientListener listener = new ClientListener(clientTracker,ReceivePeerList, AddPeer);
+                    threadListen = new Thread(new ThreadStart(listener.Listen));
+                    threadListen.Start();
+
                     Peer p1 = new Peer(torrentFileInfo);
                     p1.ConnectToPeer(1301); 
                     while (!p1.IsConnected && !Peers.Any()) { }
@@ -90,7 +113,9 @@ namespace TorrentClient
                         Thread.Sleep(250);
                         //torrentFileInfo.WriteFilePiece(i,p.data); 
                     }
-                    Console.ReadLine(); 
+                    Console.ReadLine();
+                    listener.StopListener = true;
+                    threadListen.Join();
                 }
                 catch (Exception e)
                 {

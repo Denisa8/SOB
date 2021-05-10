@@ -11,11 +11,13 @@ namespace TorrentTracker.Data
     {
         public string IP { get; private set; }
         public int Port { get; private set; }
+        public List<int> Pieces { get; private set; }
 
-        public NewPeer(string ip,int port)
+        public NewPeer(string iP, int port, List<int> pieces)
         {
-            IP = ip;
+            IP = iP;
             Port = port;
+            Pieces = pieces;
         }
     }
 }
