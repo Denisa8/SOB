@@ -6,11 +6,12 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using TorrentTracker;
-using TorrentTracker.Data;
+using TorrentTracker.Tracker;
+using TorrentTracker.Tracker.Data;
 
 namespace TorrentClient
 {
-    public delegate void ReceivePeerList(List<PeerListElement> list);
+    public delegate void ReceivePeerList(List<ConnectedPeer> list);
     public delegate void ReceiveNewPeer(Peer peer);
 
     public class ClientListener
@@ -40,25 +41,25 @@ namespace TorrentClient
                     {
                         var cap = ob.TryCast<CheckAvailablePeer>();
                         cap.Available = true;
-                        if(Program.Available)
+                        //if(Program.Available)
                             new TransportObject(cap).SendObject(stream);
                     }
-                    else if (ob.Type.Equals(typeof(List<PeerListElement>)))
+                    else if (ob.Type.Equals(typeof(List<ConnectedPeer>)))
                     {
-                        var list = ob.TryCast<List<PeerListElement>>();
+                        var list = ob.TryCast<List<ConnectedPeer>>();
                         peerList(list);
                     }
-                    else if (ob.Type.Equals(typeof(NewPeer))){
-                        var np = ob.TryCast<NewPeer>();
+                    else if (ob.Type.Equals(typeof(ConnectedPeer))){
+                        var np = ob.TryCast<ConnectedPeer>();
                         var c = new TcpClient();
                         c.Connect(np.IP, np.Port);
                         //do zapisania lista części pliku dostępnych u peera
                         newPeer(new Peer(c));
                     }
-                    else if (ob.Type.Equals(typeof(PeerAvailable)))
+                    else if (ob.Type.Equals(typeof(CheckAvailablePeer)))
                     {
-                        var pa = ob.TryCast<PeerAvailable>();
-                        Program.Available = pa.Available;
+                        var cap = ob.TryCast<CheckAvailablePeer>();
+                        //Program.Available = cap.Available;
                     }
                 }
                 catch (IOException) { }

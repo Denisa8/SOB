@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TorrentTracker\TorrentTracker.csproj">
-      <Project>{ADA1DB49-65CF-4098-A65F-9D2AB0A0FA20}</Project>
+      <Project>{3ca78fa2-e943-4ce9-a4c7-d1ce8aff560d}</Project>
       <Name>TorrentTracker</Name>
     </ProjectReference>
   </ItemGroup>

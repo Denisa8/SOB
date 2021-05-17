@@ -1,0 +1,78 @@
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\TrackerTest.exe.config
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\TrackerTest.exe
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\TrackerTest.pdb
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\TorrentTracker.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Http.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Net.Http.Formatting.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\Newtonsoft.Json.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Mvc.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Http.WebHost.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.WebPages.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.WebPages.Razor.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Razor.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\Microsoft.Web.Infrastructure.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.WebPages.Deployment.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\TorrentTracker.pdb
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\TorrentTracker.dll.config
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Http.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Net.Http.Formatting.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\Newtonsoft.Json.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Mvc.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Http.WebHost.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.WebPages.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.WebPages.Razor.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.Razor.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\System.Web.WebPages.Deployment.xml
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Web.Http.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Net.Http.Formatting.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Web.Mvc.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Web.Http.WebHost.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Web.WebPages.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Web.WebPages.Razor.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Web.Razor.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\obj\Debug\TrackerTest.csprojAssemblyReference.cache
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\obj\Debug\TrackerTest.exe.config
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\obj\Debug\TrackerTest.csproj.CoreCompileInputs.cache
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\obj\Debug\TrackerTest.csproj.CopyComplete
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\obj\Debug\TrackerTest.exe
+D:\Projekty\C#\Uczelnia\TorrentTracker\TrackerTest\obj\Debug\TrackerTest.pdb
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.csprojAssemblyReference.cache
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.csproj.CoreCompileInputs.cache
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.exe
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.pdb
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\TrackerTest.exe.config
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\TrackerTest.exe
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\TrackerTest.pdb
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\TorrentTracker.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Http.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Net.Http.Formatting.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\Newtonsoft.Json.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Mvc.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Http.WebHost.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.WebPages.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.WebPages.Razor.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Razor.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\Microsoft.Web.Infrastructure.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.WebPages.Deployment.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\TorrentTracker.pdb
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\TorrentTracker.dll.config
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Http.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Net.Http.Formatting.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\Newtonsoft.Json.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Mvc.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Http.WebHost.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.WebPages.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.WebPages.Razor.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Razor.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.WebPages.Deployment.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.Http.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Net.Http.Formatting.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.Mvc.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.Http.WebHost.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.WebPages.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.WebPages.Razor.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.Razor.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.exe.config
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.csproj.CopyComplete
