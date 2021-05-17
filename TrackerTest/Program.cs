@@ -95,6 +95,7 @@ namespace TrackerTest
                     }
                     else if (ob.Type == typeof(ChangeAvailablePeer))
                     {
+                        available = ob.TryCast<ChangeAvailablePeer>().Available;
                         Console.WriteLine("Change available peer: " + ob.TryCast<ChangeAvailablePeer>().Available);
                     }
                     else if (ob.Type == typeof(ChangeSendDataPeer))
