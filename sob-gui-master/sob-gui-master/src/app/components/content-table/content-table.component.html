@@ -1,0 +1,72 @@
+
+    <nz-table #peersTable [nzData]="peers">
+
+      <thead>
+        <tr>
+          <th nzWidth="60px"></th>
+          <th>Peer id</th>
+          <th>Status</th>
+          <th nzRight>Włącz/Wyłącz peer</th>
+          <th nzRight>Zacznij wysyłać błędne dane</th>
+        </tr>
+      </thead>
+
+      <tbody *ngFor="let data of peers">
+        <tr>
+          <td [nzExpand]="expandSet.has(data.id)" (nzExpandChange)="onExpandChange(data.id, $event)"></td>
+          <td>{{ data.id }}</td>
+          <td *ngIf="data.available">           
+              Dostępny
+          </td>
+          <td *ngIf="!data.available">
+            Niedostępny
+          </td>
+
+          <td *ngIf="!data.available"><a id={{data.id}} (click)="changeAvailable($event)">Wyłącz</a></td>
+          <td *ngIf="data.available"><a id="{{data.id}}" (click)="changeAvailable($event)">Włącz</a></td>
+          <td><a id="{{data.id}}" (click)="sendBadData($event)">Wysyłaj błędne dane</a></td>
+        </tr>
+        
+        <tr [nzExpand]="expandSet.has(data.id)">
+          <nz-table #innerTable nzSize="small" [nzShowPagination]="false" [nzData]="peersTable.data">
+            <thead>
+              <tr>
+                <th>Nazwa pliku</th>
+                <th>Postęp pobierania pliku</th>
+              </tr>
+            </thead>
+  
+            <tbody>
+              <tr *ngFor="let file of data.files" >
+                <td>{{ file.filename }}</td>
+                <td [nzExpand]>
+                  <nz-progress [nzPercent]="file.progress" [nzSteps]="10" nzStrokeColor="#1890ff" style="float: left;"></nz-progress>
+                  <nz-divider nzType="vertical" style="float: left;"></nz-divider>
+                </td>
+              </tr>
+
+            </tbody>
+          </nz-table>         
+        </tr>
+
+        <tr [nzExpand]="expandSet.has(data.id)">
+          <nz-table #innerTable nzSize="small" [nzShowPagination]="false" [nzData]="peersTable.data">
+            <thead>
+              <tr>
+                <th>id zbanowanych perrów</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr *ngFor="let bannedPeers of data.bannedPeers" >
+                <td>{{ bannedPeers }}</td>
+              </tr>
+
+            </tbody>
+
+          </nz-table>
+        </tr>
+
+      </tbody>
+    </nz-table>
+  

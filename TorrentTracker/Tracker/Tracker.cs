@@ -100,7 +100,7 @@ namespace TorrentTracker.Tracker
                 p.Files = new List<FileDTO>();
                 foreach (var o in ob.Value.Files)
                     p.Files.Add(new FileDTO() { Filename = o.Key, Progress = (int)(o.Value.Pieces.Count / (float)o.Value.countPieces * 100.0) });
-                p.ID = ob.Value.ID;
+                p.ID = ob.Value.ID.ToString();
                 l.Add(p);
             }
             return l;

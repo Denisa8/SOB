@@ -109,35 +109,8 @@ namespace TorrentClient
             {
                 //Disconnect();
             }
-        }
-        public void Serve(int portPeer)
-        {
-            IPAddress hostadd = IPAddress.Parse("127.0.0.1");
-            EndPoint = new IPEndPoint(hostadd, portPeer);
-            if (client == null)
-            {
-                client = new TcpClient();
-                try
-                {
-                    client.Connect(EndPoint);
-                    IsConnected = true;
-                }
-                catch (Exception e)
-                {
-                    Disconnect();
-                    return;
-                }
-            }
-        }
-
-        public static Piece ReadPacket(NetworkStream ns)
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            ns.Seek(0, SeekOrigin.Begin);
-
-            Piece np = (Piece)formatter.Deserialize(ns);
-            return np;
-        }
+        } 
+ 
         public void SendPiece(Piece piece)
         {
             try
@@ -250,21 +223,7 @@ namespace TorrentClient
             }
             if (client != null)
                 client.Close();
-        }
-        public void SendPieces(byte[] bytes)
-        {
-            try
-            {
-                NetworkStream stream = client.GetStream();
-
-                stream.Write(bytes, 0, bytes.Length);
-
-            }
-            catch (Exception e)
-            {
-                Disconnect();
-            }
-        }
+        } 
 
     }
 }

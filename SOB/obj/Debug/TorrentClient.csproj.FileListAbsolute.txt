@@ -73,3 +73,36 @@ D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\pl\System.Web.R
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\obj\Debug\TorrentClient.exe.config
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\obj\Debug\TorrentClient.csproj.CopyComplete
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentTracker.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Mvc.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.WebHost.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.WebPages.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.WebPages.Razor.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Razor.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\Microsoft.Web.Infrastructure.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.WebPages.Deployment.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentTracker.pdb
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentTracker.dll.config
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Net.Http.Formatting.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Mvc.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.WebHost.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.WebPages.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.WebPages.Razor.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Razor.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.WebPages.Deployment.xml
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.Http.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Net.Http.Formatting.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.Mvc.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.Http.WebHost.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.WebPages.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.WebPages.Razor.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.Razor.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.Cors.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Cors.dll
+C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.Cors.xml

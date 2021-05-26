@@ -7,7 +7,7 @@ namespace TorrentTracker.Models.DTO
 {
     public class PeerDTO
     {
-        public Guid ID { get; set; }
+        public string ID { get; set; }
         public bool Available { get; set; }
         public bool CorrectSendData { get; set; }
         public List<Guid> BannedPeers { get; set; }
