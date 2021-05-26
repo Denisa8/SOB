@@ -95,7 +95,9 @@ namespace TorrentTracker.Tracker
             {
                 var p = new PeerDTO();
                 p.Available = ob.Value.Available;
-                p.BannedPeers = ob.Value.BannedPeers;
+                List<string> bp = new List<string>();
+                foreach (var b in ob.Value.BannedPeers) bp.Add(b.ToString());
+                p.BannedPeers = bp;
                 p.CorrectSendData = ob.Value.SendCorrectData;
                 p.Files = new List<FileDTO>();
                 foreach (var o in ob.Value.Files)
