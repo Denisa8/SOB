@@ -186,3 +186,7 @@ D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\pl\System.
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\pl\System.Web.WebPages.Razor.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.csproj.CoreCompileInputs.cache
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.csproj.CopyComplete
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\System.Web.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\System.Web.Http.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\System.Web.Http.Cors.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.csprojAssemblyReference.cache

@@ -27,6 +27,8 @@ namespace TorrentTracker
             // Trasy składnika Web API
             config.MapHttpAttributeRoutes();
 
+            config.EnableCors();
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "{controller}/{action}/{id}",
