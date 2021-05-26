@@ -95,12 +95,14 @@ namespace TorrentTracker.Tracker
             {
                 var p = new PeerDTO();
                 p.Available = ob.Value.Available;
-                p.BannedPeers = ob.Value.BannedPeers;
+                List<string> bp = new List<string>();
+                foreach (var b in ob.Value.BannedPeers) bp.Add(b.ToString());
+                p.BannedPeers = bp;
                 p.CorrectSendData = ob.Value.SendCorrectData;
                 p.Files = new List<FileDTO>();
                 foreach (var o in ob.Value.Files)
                     p.Files.Add(new FileDTO() { Filename = o.Key, Progress = (int)(o.Value.Pieces.Count / (float)o.Value.countPieces * 100.0) });
-                p.ID = ob.Value.ID;
+                p.ID = ob.Value.ID.ToString();
                 l.Add(p);
             }
             return l;
