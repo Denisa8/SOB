@@ -119,3 +119,44 @@ F:\Studia\Github\SOB\SOB\TrackerTest\obj\Debug\TrackerTest.csproj.CoreCompileInp
 F:\Studia\Github\SOB\SOB\TrackerTest\obj\Debug\TrackerTest.csproj.CopyComplete
 F:\Studia\Github\SOB\SOB\TrackerTest\obj\Debug\TrackerTest.exe
 F:\Studia\Github\SOB\SOB\TrackerTest\obj\Debug\TrackerTest.pdb
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\TrackerTest.exe.config
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\TrackerTest.exe
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\TrackerTest.pdb
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\TorrentTracker.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Http.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Http.Cors.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Mvc.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Http.WebHost.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Cors.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.WebPages.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.WebPages.Razor.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Razor.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\Microsoft.Web.Infrastructure.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.WebPages.Deployment.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\TorrentTracker.pdb
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\TorrentTracker.dll.config
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Http.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Http.Cors.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Net.Http.Formatting.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Mvc.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Http.WebHost.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.WebPages.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.WebPages.Razor.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.Razor.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\System.Web.WebPages.Deployment.xml
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Web.Http.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Net.Http.Formatting.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Web.Mvc.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Web.Http.WebHost.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Web.WebPages.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Web.WebPages.Razor.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Web.Razor.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\obj\Debug\TrackerTest.csprojAssemblyReference.cache
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\obj\Debug\TrackerTest.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\obj\Debug\TrackerTest.csproj.CopyComplete
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\obj\Debug\TrackerTest.exe
+C:\Users\Admin\Desktop\SOB - projekt\TrackerTest\obj\Debug\TrackerTest.pdb
