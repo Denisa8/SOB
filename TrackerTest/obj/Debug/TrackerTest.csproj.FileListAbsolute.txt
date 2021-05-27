@@ -74,5 +74,7 @@ D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\Syst
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.WebPages.Razor.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.Razor.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
-D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.exe.config
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\obj\Debug\TrackerTest.csproj.CopyComplete
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Http.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TrackerTest\bin\Debug\System.Web.Http.Cors.xml

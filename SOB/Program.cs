@@ -205,6 +205,20 @@ namespace TorrentClient
                         Console.WriteLine("Change send data peer: " + csdp.CorrectSendData);
                         sendCorrectData = csdp.CorrectSendData;
                     }
+                    else if (ob.Type == typeof(InformPeerAboutNewReceivePiece))
+                    {
+                        var ipa = ob.TryCast<InformPeerAboutNewReceivePiece>();
+                        Console.WriteLine("Peer: " + ipa.ID + " file: " + ipa.File + " receive piece: " + ipa.Piece);
+                        try
+                        {
+                            var p = AvailablePeersOnTracker.First(x => x.ID == ipa.ID);
+                            if (p.Files[ipa.File].Pieces.Contains(ipa.Piece))
+                            {
+                                p.Files[ipa.File].Pieces.Add(ipa.Piece);
+                            }
+                        }
+                        catch (Exception) { }
+                    }
                 }
                 timerTracker.Change(0, Timeout.Infinite);
             }

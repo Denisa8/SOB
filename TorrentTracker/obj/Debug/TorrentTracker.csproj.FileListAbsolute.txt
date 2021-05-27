@@ -284,3 +284,7 @@ C:\Users\Admin\Desktop\SOB - projekt\TorrentTracker\bin\System.Web.Cors.dll
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTracker\bin\System.Web.Http.Cors.dll
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTracker\bin\System.Web.Http.Cors.xml
 C:\Users\Admin\Desktop\SOB - projekt\TorrentTracker\obj\Debug\TorrentTracker.csprojAssemblyReference.cache
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\System.Web.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\System.Web.Http.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\bin\System.Web.Http.Cors.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTracker\obj\Debug\TorrentTracker.csprojAssemblyReference.cache

@@ -71,7 +71,6 @@ D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\pl\System.Web.W
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\pl\System.Web.WebPages.Razor.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\pl\System.Web.Razor.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
-D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\obj\Debug\TorrentClient.exe.config
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\obj\Debug\TorrentClient.csproj.CopyComplete
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\TorrentTracker.dll
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.dll
@@ -106,3 +105,6 @@ C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\pl\System.Web.WebPages.Deploy
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.Cors.dll
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Cors.dll
 C:\Users\Admin\Desktop\SOB - projekt\SOB\bin\Debug\System.Web.Http.Cors.xml
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\System.Web.Http.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\System.Web.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\SOB\bin\Debug\System.Web.Http.Cors.xml

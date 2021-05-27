@@ -35,8 +35,15 @@ namespace TorrentTracker.Tracker
                     if (ob.Type == typeof(ReceivePieceFile))
                     {
                         var rpf = ob.TryCast<ReceivePieceFile>();
-                        if(!peer.Files[rpf.Filename].Pieces.Contains(rpf.Index))
+                        if (!peer.Files[rpf.Filename].Pieces.Contains(rpf.Index))
+                        {
                             peer.Files[rpf.Filename].Pieces.Add(rpf.Index);
+                            foreach(var p in Tracker.Peers)
+                            {
+                                if (peer.ID != p.Key)
+                                    p.Value.InformPeerAboutReceiveNewPieceFile(peer.ID, rpf.Filename, rpf.Index);
+                            }
+                        }
                     }
                     else if (ob.Type == typeof(CheckAvailablePeer))
                     {

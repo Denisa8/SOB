@@ -62,8 +62,10 @@ D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\bin\Debug\pl\Syst
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\bin\Debug\pl\System.Web.Razor.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\bin\Debug\pl\System.Web.WebPages.Deployment.resources.dll
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\obj\Debug\TorrentTest.csprojAssemblyReference.cache
-D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\obj\Debug\TorrentTest.exe.config
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\obj\Debug\TorrentTest.csproj.CoreCompileInputs.cache
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\obj\Debug\TorrentTest.csproj.CopyComplete
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\obj\Debug\TorrentTest.exe
 D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\obj\Debug\TorrentTest.pdb
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\bin\Debug\System.Web.Http.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\bin\Debug\System.Web.Cors.dll
+D:\Uczelnia\Systemy odporne na błędy\Projekt\SOB\TorrentTest\bin\Debug\System.Web.Http.Cors.xml

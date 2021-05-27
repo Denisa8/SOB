@@ -137,6 +137,7 @@
     <Compile Include="Tracker\Data\CheckAvailablePeer.cs" />
     <Compile Include="Tracker\Data\ConnectedPeer.cs" />
     <Compile Include="Tracker\Data\FileTorrent.cs" />
+    <Compile Include="Tracker\Data\InformPeerAboutNewReceivePiece.cs" />
     <Compile Include="Tracker\Data\InitConnectToTracker.cs" />
     <Compile Include="Tracker\Data\IpPort.cs" />
     <Compile Include="Tracker\Data\ReceivePieceFile.cs" />

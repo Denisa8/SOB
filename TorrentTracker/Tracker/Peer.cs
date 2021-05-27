@@ -101,5 +101,10 @@ namespace TorrentTracker.Tracker
             }
             catch (IOException) { }
         }
+
+        public void InformPeerAboutReceiveNewPieceFile(Guid peer,string file,int index)
+        {
+            Tools.Send(client.GetStream(), new TransportObject(new InformPeerAboutNewReceivePiece(peer, file, index)),1000);
+        }
     }
 }
