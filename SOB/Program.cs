@@ -34,6 +34,7 @@ namespace TorrentClient
         static bool availablePeer = true;
         static bool sendCorrectData = true;
         static Timer timerTracker;
+        static bool isStopping = false;
 
         private static void EnablePeerConnections(int Port)
         {
@@ -50,22 +51,26 @@ namespace TorrentClient
 
             TcpClient client = listener.EndAcceptTcpClient(ar);
             listener.BeginAcceptTcpClient(new AsyncCallback(HandlePeerConnection), null);
-            Console.WriteLine("DODANO " + port);
+            Console.WriteLine("Połączenie od:  " + port);
 
             AddPeer(new Peer(client,torrentFileInfo));
         }
         private static void AddPeer(Peer peer)
         {
             Random rand = new Random();
-            peer.ConnectToPeer(1300);
+            peer.ConnectToPeer(port);
 
             if (!Peers.TryAdd(rand.Next(), peer))
                 peer.Disconnect();
         }
 
-        public static string torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+        public static string torrentsPath = @"D:\a\Bees.torrent";
+        public static string PathSource = @"D:\a\Bees.txt";
+        public static string PathNew = @"D:\a\Downloaded\Bees.torrent";
+
+        /*public static string torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
         public static string PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-        public static string PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";
+        public static string PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
 
         //public static string torrentsPath = "wyklady2.torrent";
         //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -73,6 +78,16 @@ namespace TorrentClient
 
         static async Task Main(string[] args)
         {
+            try
+            {
+                port = Convert.ToInt32(args[0]);
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Niepoprawny port");
+                return;
+            }
+
             var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads"); 
             if (!Directory.Exists(filePath))
                 Directory.CreateDirectory(filePath); 
@@ -89,7 +104,7 @@ namespace TorrentClient
                     torrentFileInfo.PieceHashes = new byte[torrentFileInfo.PiecesCount][];
                     torrentFileInfo.PathSource = PathSource;
                     torrentFileInfo.PathNew = PathNew; 
-                    EnablePeerConnections(1300);
+                    EnablePeerConnections(port);
 
                     clientTracker = new TcpClient();
                     clientTracker.Connect(trackerIp, trackerPort);
@@ -108,8 +123,8 @@ namespace TorrentClient
                     //uruchamianie listenera
                     timerTracker = new Timer(async (o) => await ListenTracker(), null, Timeout.Infinite, Timeout.Infinite);
                     timerTracker.Change(0, Timeout.Infinite);
+                    Peer p1 = new Peer(torrentFileInfo); 
 
-                    Peer p1 = new Peer(torrentFileInfo);
                     p1.ConnectToPeer(1301); 
                     while (!p1.IsConnected && !Peers.Any()) { }
                     for (int i=0;i< torrent.Pieces.Count; i++)
@@ -117,6 +132,7 @@ namespace TorrentClient
                         var byteResult = torrent.Pieces.ReadHash(i);
                         torrentFileInfo.PieceHashes[i] = byteResult;
                         Piece p = torrentFileInfo.ReadFilePiece(i); 
+
                         if (p == null)
                             continue;
                         p1.SendPiece(p);

@@ -21,7 +21,7 @@ namespace TorrentClient
         private static Thread sendThread { get; set; }
         private static Thread receiveThread { get; set; }
         public bool IsConnected;
-        private int port;
+        public int Port { get { return EndPoint.Port; } }
         private byte[] buffer;
         private int counter = 0;
         private int counterRead = 0;
