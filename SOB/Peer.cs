@@ -170,6 +170,11 @@ namespace TorrentClient
         return null;
       }
     } 
+    public static void getType()
+        {
+
+        } 
+
     public void Disconnect()
     {
       if (IsConnected)
