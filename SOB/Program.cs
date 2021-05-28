@@ -12,7 +12,7 @@ using TorrentTracker.Tracker.Data;
 
 namespace TorrentClient
 {
-    class Program
+    public class Program
     {
         static TorrentFileInfo torrentFileInfo = new TorrentFileInfo();
         public static ConcurrentDictionary<int, Peer> Peers { get; } = new ConcurrentDictionary<int, Peer>();
@@ -37,18 +37,6 @@ namespace TorrentClient
            public static string torrentsPath;
            public static string PathSource;
            public static string PathNew;
-
-        /*   public static string torrentsPath = @"D:\a\Bees.torrent";
-           public static string PathSource = @"D:\a\Bees.txt";
-           public static string PathNew = @"D:\a\Downloaded\Bees.torrent";*/
-
-        /*  public static string torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
-          public static string PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-          public static string PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
-
-        //public static string torrentsPath = "wyklady2.torrent";
-        //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
-        //public static string PathNew = @"c:\Users\Admin\Desktop\wyklady3.zip";
 
         static async Task Main(string[] args)
         {
@@ -88,6 +76,15 @@ namespace TorrentClient
                     FileTorrent file = new FileTorrent(torrentFileInfo.TorrentHash.ToString(), pieces, pieces.Count);
                     Files.TryAdd(torrentFileInfo.TorrentHash.ToString(), file);
 
+                    ///////////////////////////////////////////////////////////////////////////////////
+                    if ((port == 1300)) // host na 1300 ma caly plik
+                        for (int i = 0; i < peer.torrent.ReadPieces.Length; i++)
+                        {// TEMP 
+                            peer.torrent.ReadPieces[i] = true;
+                        }
+                    ///////////////////////////////////////////////////////////////////////////////////
+
+
                     InitConnectToTracker connSettings = new InitConnectToTracker(ID, peerIp, port, Files.ToDictionary(x => x.Key, x => x.Value), bannedPeers);
                     TransportObject ob = new TransportObject(connSettings);
                     ob.SendObject(stream);
@@ -96,6 +93,134 @@ namespace TorrentClient
                     timerTracker = new Timer(async (o) => await ListenTracker(), null, Timeout.Infinite, Timeout.Infinite);
                     timerTracker.Change(0, Timeout.Infinite);
                     #endregion
+                    
+                    // wysylanie zapytan o kolejne czesci
+                    new Thread(new ThreadStart(() =>
+                    {
+                        while (!isStopping)
+                        {
+
+                            Thread.Sleep(5000);
+                            Console.WriteLine("---- client.port: " + port);
+                            var keys = peer.Peers.Keys;
+                            Console.WriteLine("---- Peer.Peers.count = " + keys.Count() );
+                            foreach(int key in keys)
+                            {
+                                peer.Peers.TryGetValue(key, out Peer p);
+                                Console.WriteLine("peer.Port: " + p.Port);
+                            }
+
+                            /*if (peer.torrent.ReadPieces.Where(x => x == false).Count() == 0) // klient posiada wszystkie czesci
+                            {
+                                Thread.Sleep(10000); // narazie nie wiem co z tym zrobic. teraz jak wszystkie czesci sa pobrane to ten watek jest usypiany
+                                continue;
+                            }
+                            for (int i=0;i<peer.torrent.ReadPieces.Length;i++) 
+                            {
+                                if (!peer.torrent.ReadPieces[i])
+                                {
+                                    var keys = Peer.Peers.Keys;
+
+                                    Console.WriteLine("\tkeys ---> " + keys.Count);
+
+                                    foreach (int key in keys)
+                                    {
+                                        if (!Peer.Peers.TryGetValue(key, out Peer availablePeer))
+                                            continue;
+                                        
+                                        Console.WriteLine("Peer "+ peer.Port +" is Checking piece ID => " + i + " -- " + availablePeer.torrent.ReadPieces[i].ToString() + " -- peer " + availablePeer.Port);
+                                        if (availablePeer.torrent.ReadPieces[i])
+                                        {
+                                            Console.WriteLine("Sending");
+                                            var message = new byte[peer.torrent.PiecesLength + 9];
+                                            var indexByte = BitConverter.GetBytes(i);
+                                            var lengthByte = BitConverter.GetBytes(0);
+                                            var pieceByte = BitConverter.GetBytes(0);
+
+                                            Buffer.BlockCopy(indexByte, 0, message, 0, 4);
+                                            message[4] = 0;
+                                            Buffer.BlockCopy(lengthByte, 0, message, 5, 4);
+                                            Buffer.BlockCopy(pieceByte, 0, message, 9, 0);
+
+                                            Peer.Peers[0].SendMessage(message);
+                                        }
+                                    }
+                                }
+                            }*/
+                        }
+                    })).Start();
+                    // przetwarzanie zapytan wychodzacych
+                    new Thread(new ThreadStart(() =>
+                    {
+                        while (!isStopping)
+                        {
+                            if (peer.Outgoing.Count == 0)
+                            {
+                                Thread.Sleep(1000);
+                                continue;
+                            }
+
+                            var pendingMessage = peer.Outgoing[0];
+                            pendingMessage.Send();
+                            Console.WriteLine("Wyslano");
+                            peer.Outgoing.Remove(pendingMessage);
+                        }
+                    }));//.Start();
+                    // przetwarzanie przychodzacych wiadomosci
+                    new Thread(new ThreadStart(() =>
+                    {
+                        while (!isStopping)
+                        {
+                            if (peer.Incoming.Count == 0)
+                            {
+                                Thread.Sleep(1000);
+                                continue;
+                            }
+
+
+                            var pendingMessage = peer.Incoming[0];
+
+                            byte type = pendingMessage.Type;
+                            if (type == 1)
+                            {
+                                int id = BitConverter.ToInt32(pendingMessage.Message, 0); //tutaj masz, który kawałek Ci przyszedł
+
+                                if (peer.torrent.ReadPieces[id] == true) // jesli juz mamy taka czesc to zignorowac wiadomosc
+                                {
+                                    peer.Incoming.Remove(pendingMessage);
+                                    continue;
+                                }
+
+                                int lenght = BitConverter.ToInt32(pendingMessage.Message, 5);
+                                byte[] b = pendingMessage.Message.Skip(9).Take(lenght).ToArray();
+
+                                Console.WriteLine("odczytano: " + id + " l " + lenght);
+                                //peer.torrent.WriteFilePiece(id, b); // ten odczytany fragment też mozna do jakiejs struktry zapisać do momentu aż odczytamy
+
+                                if (id < peer.torrent.ReadPieces.Length)
+                                {
+                                    peer.torrent.ReadPieces[id] = true;//np tak oznaczaćm, ze mamy czy cos 
+                                }
+                            }
+                            else if (type == 0)
+                            {
+                                pendingMessage.Message[4] = 1;
+                                int id = BitConverter.ToInt32(pendingMessage.Message, 0); // pobranie id kawalka
+                                var bytes = Peer.EncodePiece(torrentFileInfo.ReadFilePiece(id));// wczytaj piece jako tablice bajtow);
+                                var lengthByte = BitConverter.GetBytes(bytes.Length);
+                                Buffer.BlockCopy(bytes, 0, pendingMessage.Message, 9, bytes.Length);
+                                Buffer.BlockCopy(lengthByte, 0, pendingMessage.Message, 5, 4);
+                                peer.Outgoing.Add(pendingMessage);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Odebrano niepoprawna wiadomosc");
+                            }
+                            peer.Incoming.Remove(pendingMessage);
+                        }
+                    }));//.Start();
+
+
                     while (true)
                     { }
                     //p1.ConnectToPeer(1301);
@@ -125,6 +250,24 @@ namespace TorrentClient
 
         private static void CheckArguments(string[] args)
         {
+            if(args.Length == 1) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
+            {
+                  torrentsPath = @"D:\a\Bees.torrent";
+                  PathSource = @"D:\a\Bees.txt";
+                   PathNew = @"D:\a\Downloaded\Bees.torrent";
+                port = int.Parse(args[0]);
+                /*  public static string torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+                  public static string PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
+                  public static string PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
+
+                //public static string torrentsPath = "wyklady2.torrent";
+                //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
+                //public static string PathNew = @"c:\Users\Admin\Desktop\wyklady3.zip";
+
+        return;
+            }
+
+
             try
             {
                 port = Convert.ToInt32(args[0]);

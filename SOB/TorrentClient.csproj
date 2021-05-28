@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Messages\Handshake.cs" />
+    <Compile Include="Messages\PendingMessage.cs" />
     <Compile Include="Peer.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="Program.cs" />

@@ -9,8 +9,8 @@ namespace StartMultipleClients
 {
     class Program 
     {
-        static int ClientNumber { get; set; } = 21; // ile klientow ma zostac uruchomionych
-        static int StartingPort { get; set; } = 1300;  // pierwszy port ktory bedzie uzyty
+        static int ClientNumber { get; set; } = 2; // ile klientow ma zostac uruchomionych
+        static int StartingPort { get; set; } = 1301;  // pierwszy port ktory bedzie uzyty
         public static string StartingPath { get; set; } = "D:\\SOB_klienci"; //tutaj wstawiacie sobie folder w ktorym maja byc stworzone osobne katalogi dla klientow. W tym katalogu musi tez byc torrent
         static List<string> Paths { get; set; }
         static string pathToProgram = "F:\\Studia\\Github\\SOB\\SOB\\SOB\\bin\\Debug\\TorrentClient.exe";
@@ -40,7 +40,7 @@ namespace StartMultipleClients
             Init();
 
             for (int i = 0; i < ClientNumber; i++)
-            {
+            {               
                 var proc = System.Diagnostics.Process.Start(pathToProgram, StartingPort + i + " " + StartingPath + " " + Paths[i]);
             }
         }
