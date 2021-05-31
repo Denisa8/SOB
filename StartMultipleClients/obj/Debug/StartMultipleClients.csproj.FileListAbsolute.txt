@@ -5,3 +5,10 @@ F:\Studia\Github\SOB\SOB\StartMultipleClients\obj\Debug\StartMultipleClients.csp
 F:\Studia\Github\SOB\SOB\StartMultipleClients\obj\Debug\StartMultipleClients.csproj.CoreCompileInputs.cache
 F:\Studia\Github\SOB\SOB\StartMultipleClients\obj\Debug\StartMultipleClients.exe
 F:\Studia\Github\SOB\SOB\StartMultipleClients\obj\Debug\StartMultipleClients.pdb
+C:\Users\Admin\Desktop\SOB - projekt\StartMultipleClients\bin\Debug\StartMultipleClients.exe.config
+C:\Users\Admin\Desktop\SOB - projekt\StartMultipleClients\bin\Debug\StartMultipleClients.exe
+C:\Users\Admin\Desktop\SOB - projekt\StartMultipleClients\bin\Debug\StartMultipleClients.pdb
+C:\Users\Admin\Desktop\SOB - projekt\StartMultipleClients\obj\Debug\StartMultipleClients.csprojAssemblyReference.cache
+C:\Users\Admin\Desktop\SOB - projekt\StartMultipleClients\obj\Debug\StartMultipleClients.csproj.CoreCompileInputs.cache
+C:\Users\Admin\Desktop\SOB - projekt\StartMultipleClients\obj\Debug\StartMultipleClients.exe
+C:\Users\Admin\Desktop\SOB - projekt\StartMultipleClients\obj\Debug\StartMultipleClients.pdb

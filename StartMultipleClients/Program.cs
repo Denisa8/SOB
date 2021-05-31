@@ -11,10 +11,11 @@ namespace StartMultipleClients
     {
         static int ClientNumber { get; set; } = 2; // ile klientow ma zostac uruchomionych
         static int StartingPort { get; set; } = 1301;  // pierwszy port ktory bedzie uzyty
-        public static string StartingPath { get; set; } = "D:\\SOB_klienci"; //tutaj wstawiacie sobie folder w ktorym maja byc stworzone osobne katalogi dla klientow. W tym katalogu musi tez byc torrent
+        public static string StartingPath { get; set; } = "C:\\Users\\Admin\\Desktop\\test"; //tutaj wstawiacie sobie folder w ktorym maja byc stworzone osobne katalogi dla klientow. W tym katalogu musi tez byc torrent
         static List<string> Paths { get; set; }
-        static string pathToProgram = "F:\\Studia\\Github\\SOB\\SOB\\SOB\\bin\\Debug\\TorrentClient.exe";
-        static void Main(string[] args)
+        static string pathToProgram = "C:\\Users\\Admin\\Desktop\\SOB - projekt\\SOB\bin\\Debug\\TorrentClient.exe";
+
+    static void Main(string[] args)
         {
             Run();
         }
