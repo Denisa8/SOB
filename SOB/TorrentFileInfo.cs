@@ -9,8 +9,8 @@ namespace TorrentClient
   {
     public string TrackerUrl { get; set; }
     public int TorrentsPath { get; set; }
-    public int TorrentHash { get; set; }
-    public byte[][] PieceHashes { get; set; }
+    public static int TorrentHash { get; set; }
+    public static byte[][] PieceHashes { get; set; }
     public int PiecesCount { get; set; }
     public int PiecesLength { get; set; }
     public string PathSource { get; set; }
@@ -18,7 +18,6 @@ namespace TorrentClient
 
     static object lockObject = new object();
 
-    public bool[] ReadPieces { get; set; }
     public bool CheckReceivedPiece(byte[] bytes, int index, int receivedBytes)
     {
       if (receivedBytes > PiecesLength)
@@ -30,13 +29,14 @@ namespace TorrentClient
       {
         byte[] truncArray = new byte[receivedBytes];
         Array.Copy(bytes, truncArray, truncArray.Length);
-        var rs = CheckHash(truncArray, index);
+        var rs = CheckPieceHash(truncArray, index);
         return rs;
       }
-      var r = CheckHash(bytes, index);
+      var r = CheckPieceHash(bytes, index);
       return r;
     }
-    public bool CheckHash(byte[] bytes, int index)
+    
+    public static bool CheckPieceHash(byte[] bytes, int index)
     {
       var hash = Hash(bytes);
       var result = hash.SequenceEqual(PieceHashes[index]);

@@ -16,5 +16,8 @@ namespace TorrentClient
     public static bool availablePeer = true;
     public static bool sendCorrectData = true;
     public static bool isStopping = false;
+    public static TorrentFileInfo torrentFileInfo = new TorrentFileInfo();
+    public static bool[] ReadPieces { get; set; }
+
   }
 }

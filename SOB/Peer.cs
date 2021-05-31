@@ -1,5 +1,7 @@
-﻿using System;
+﻿using MiscUtil.Conversion;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using TorrentClient.Messages;
@@ -11,34 +13,24 @@ namespace TorrentClient
     private TcpClient client { get; set; }
     public IPEndPoint EndPoint { get; private set; }
     private NetworkStream stream { get; set; }
-    public bool IsConnected; 
+    public bool IsConnected;
     public int Port { get { return EndPoint.Port; } }
     /*private*/
     public byte[] buffer;
     private int counter = 0;
     private int counterRead = 0;
     /*private*/
-    public TorrentFileInfo torrent { get; set; } 
     public List<PendingMessage> Incoming { get; set; } = new List<PendingMessage>();
     public List<PendingMessage> Outgoing { get; set; } = new List<PendingMessage>(); // W tych dwoch listach sa wszystkie wiadomosci ktore trzeba przetworzyc
 
-    public Peer(TcpClient client, TorrentFileInfo torrent)
-    {
-      this.client = client;
-      this.torrent = torrent;
-    }
     public Peer(TcpClient client)
     {
       this.client = client;
     }
-    public Peer(TorrentFileInfo torrent)
-    {
-      this.torrent = torrent;
-    }
     public Peer()
     {
     }
-   
+
     public void ConnectToPeer(int portPeer)
     {
       IPAddress hostadd = IPAddress.Parse("127.0.0.1");
@@ -59,8 +51,8 @@ namespace TorrentClient
       }
       stream = client.GetStream();
       Settings.isStopping = false;
-      buffer = new byte[torrent.PiecesLength + 9];
-      stream.BeginRead(buffer, 0, torrent.PiecesLength + 9, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
+      buffer = new byte[Settings.torrentFileInfo.PiecesLength + 26];
+      stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + 26, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
     }
     private void HandleRead(IAsyncResult ar)
     {
@@ -71,26 +63,35 @@ namespace TorrentClient
         if (bytes > 0)
         {
           Console.WriteLine("bytes: " + bytes);
-          Incoming.Add(new PendingMessage(stream, buffer));
-          buffer = new byte[torrent.PiecesLength + 9];
 
-
-          /* // Tak bylo
-          int id = BitConverter.ToInt32(buffer, 0); //tutaj masz, który kawałek Ci przyszedł
-          int lenght = BitConverter.ToInt32(buffer, 5);
-          byte[] b = buffer.Skip(9).Take(lenght).ToArray();
-          //= new byte[lenght]; 
-          //lenght = lenght - 1 < 0 ? 0 : (lenght - 1);
-          //Buffer.BlockCopy(buffer, 9, b, 0, lenght);
-          //var piece = Deserialize(buffer);
-          buffer = new byte[torrent.PiecesLength + 9];
-          Console.WriteLine("odczytano: " + id + " l " + lenght);
-          torrent.WriteFilePiece(id, b); // ten odczytany fragment też mozna do jakiejs struktry zapisać do momentu aż odczytamy
-          counter++;
-          if (id < torrent.ReadPieces.Length)
+          int id = BitConverter.ToInt32(buffer, 0); 
+          int length = EndianBitConverter.Big.ToInt32(buffer, 4);
+          int torrentHash = EndianBitConverter.Big.ToInt32(buffer, 8);
+          int type = buffer[9];
+          var idS = buffer.Skip(9).Take(16).ToArray();
+          Guid guid = new Guid(idS);
+          Console.WriteLine(Settings.ID);
+          byte[] b = buffer.Skip(26).Take(length).ToArray(); 
+          if (type == 1)
           {
-              torrent.ReadPieces[id] = true;//np tak oznaczaćm, ze mamy czy cos 
-          }*/
+            var result = TorrentFileInfo.CheckPieceHash(b, id);
+            if (!result)
+              Console.WriteLine("Odebrano błędny fragment");//wysłać info na serwer
+            else
+            {
+              if (Settings.ReadPieces !=null&& id < Settings.ReadPieces.Length)
+                Settings.ReadPieces[id] = true;
+            }
+
+          }
+          buffer = new byte[Settings.torrentFileInfo.PiecesLength + 26];
+          Console.WriteLine("odczytano: " + id + " l " + length);
+          //Settings.torrentFileInfo.WriteFilePiece(id, b);
+          counter++;
+          Console.WriteLine("bytes: " + bytes);
+          //jak chcesz te przychodzące metody, to weź w jakiś obiekt umieśc te zdekodowane dane juz i dopiero
+          //Incoming.Add(new PendingMessage(stream, buffer)); /przekazac zdekodowane dane 
+          // buffer = new byte[torrent.PiecesLength + 9]; 
         }
         //stream.Close();
       }
@@ -104,7 +105,7 @@ namespace TorrentClient
       try
       {
         stream = client.GetStream();
-        stream.BeginRead(buffer, 0, torrent.PiecesLength + 9, new AsyncCallback(HandleRead), null);
+        stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + 26, new AsyncCallback(HandleRead), null);
       }
       catch (Exception e)
       {
@@ -112,13 +113,23 @@ namespace TorrentClient
       }
     }
 
-    public void SendPiece(Piece piece)
+    public void SendPiece(Piece piece, byte type)
     {
       try
       {
-        var bytes = EncodePiece(piece);
-        //formatter.Serialize(stream, piece);  
-        stream.Write(bytes, 0, bytes.Length);
+        if (Settings.sendCorrectData)
+        {
+          var bytes = EncodePiece(piece, type);
+          //formatter.Serialize(stream, piece);  
+          stream.Write(bytes, 0, bytes.Length);
+        }
+        else
+        {
+          Random rnd = new Random();
+          Byte[] bytes = new Byte[Settings.torrentFileInfo.PiecesLength + 26];
+          rnd.NextBytes(b);
+          stream.Write(bytes, 0, bytes.Length);
+        }
       }
       catch (Exception e)
       {
@@ -131,18 +142,24 @@ namespace TorrentClient
       stream.Write(message, 0, message.Length);
     }
 
-    public static byte[] EncodePiece(Piece piece)
+    public static byte[] EncodePiece(Piece piece, byte type)
     {
       try
       {
-        int length = piece.data.Length + 9;
-        var lengthByte = BitConverter.GetBytes(piece.length);
-        var indexByte = BitConverter.GetBytes(piece.index);
+        int length = piece.data.Length + 26;
         byte[] message = new byte[length];
-        Buffer.BlockCopy(indexByte, 0, message, 0, 4);
-        message[4] = 1;  // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
-        Buffer.BlockCopy(lengthByte, 0, message, 5, 4);
-        Buffer.BlockCopy(piece.data, 0, message, 9, piece.data.Length);
+        Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(piece.index), 0, message, 0, 4);
+        Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(piece.length), 0, message, 4, 4);
+        Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 1);
+        message[9] = type;
+        Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 10, 16);
+
+        //var lengthByte = BitConverter.GetBytes(piece.length);
+        //var indexByte = BitConverter.GetBytes(piece.index);
+        // Buffer.BlockCopy(indexByte, 0, message, 0, 4);
+        //message[4] = type;  // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
+        //Buffer.BlockCopy(lengthByte, 0, message, 5, 4);
+        Buffer.BlockCopy(piece.data, 0, message, 26, piece.data.Length);
         return message;
       }
       catch (Exception e)
