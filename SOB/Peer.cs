@@ -74,15 +74,21 @@ namespace TorrentClient
           byte[] b = buffer.Skip(26).Take(length).ToArray(); 
           if (type == 1)
           {
-            var result = TorrentFileInfo.CheckPieceHash(b, id);
-            if (!result)
-              Console.WriteLine("Odebrano błędny fragment");//wysłać info na serwer
+            if (torrentHash != TorrentFileInfo.TorrentHash)
+            {
+              Console.WriteLine("Niewłaściwy hash pliku");//wysłać info na serwer 
+            }
             else
             {
-              if (Settings.ReadPieces !=null&& id < Settings.ReadPieces.Length)
-                Settings.ReadPieces[id] = true;
+              var result = TorrentFileInfo.CheckPieceHash(b, id);
+              if (!result)
+                Console.WriteLine("Odebrano błędny fragment");//wysłać info na serwer
+              else
+              {
+                if (Settings.ReadPieces != null && id < Settings.ReadPieces.Length)
+                  Settings.ReadPieces[id] = true;
+              }
             }
-
           }
           buffer = new byte[Settings.torrentFileInfo.PiecesLength + 26];
           Console.WriteLine("odczytano: " + id + " l " + length);
@@ -127,7 +133,7 @@ namespace TorrentClient
         {
           Random rnd = new Random();
           Byte[] bytes = new Byte[Settings.torrentFileInfo.PiecesLength + 26];
-          rnd.NextBytes(b);
+          rnd.NextBytes(bytes);
           stream.Write(bytes, 0, bytes.Length);
         }
       }
