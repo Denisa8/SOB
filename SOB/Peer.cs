@@ -62,7 +62,7 @@ namespace TorrentClient
                 {
                     Console.WriteLine("bytes: " + bytes);
 
-                    int id = BitConverter.ToInt32(buffer, 0);
+                    int id = EndianBitConverter.Big.ToInt32(buffer, 0);
                     int length = EndianBitConverter.Big.ToInt32(buffer, 4);
                     int torrentHash = EndianBitConverter.Big.ToInt32(buffer, 8);
                     int type = buffer[12];
@@ -166,10 +166,10 @@ namespace TorrentClient
         {
             int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
             byte[] message = new byte[length];
-            Buffer.BlockCopy(BitConverter.GetBytes(index), 0, message, 0, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(0), 0, message, 4, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(index), 0, message, 0, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
-            Buffer.BlockCopy(BitConverter.GetBytes(0),0,message,12,1); // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0),0,message,12,1); // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
             Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
             Console.WriteLine(message.Length + "bytes sent");
             try
