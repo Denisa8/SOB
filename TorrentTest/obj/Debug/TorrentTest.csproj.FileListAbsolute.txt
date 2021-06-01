@@ -121,3 +121,5 @@ F:\Studia\Github\SOB\SOB\TorrentTest\obj\Debug\TorrentTest.csproj.CoreCompileInp
 F:\Studia\Github\SOB\SOB\TorrentTest\obj\Debug\TorrentTest.csproj.CopyComplete
 F:\Studia\Github\SOB\SOB\TorrentTest\obj\Debug\TorrentTest.exe
 F:\Studia\Github\SOB\SOB\TorrentTest\obj\Debug\TorrentTest.pdb
+F:\Studia\Github\SOB\SOB\TorrentTest\bin\Debug\MiscUtil.dll
+F:\Studia\Github\SOB\SOB\TorrentTest\bin\Debug\MiscUtil.xml

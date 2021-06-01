@@ -36,7 +36,7 @@ namespace TorrentTest
             TcpClient client = listener.EndAcceptTcpClient(ar);
             listener.BeginAcceptTcpClient(new AsyncCallback(HandleNewConnection), null);
             Console.WriteLine("DODANO " + port);
-            AddPeer(new Peer(client,torrentFileInfo));
+          //  AddPeer(new Peer(client,torrentFileInfo));
         }
         private static void AddPeer(Peer peer)
         {
@@ -54,7 +54,7 @@ namespace TorrentTest
         //public static string PathNew = @"c:\Users\Admin\Desktop\wyklady2.zip";
         static async Task Main(string[] args)
         {
-            var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads"); 
+         /*   var filePath = Path.Combine(Environment.CurrentDirectory, "Downloads"); 
             if (!Directory.Exists(filePath))
                 Directory.CreateDirectory(filePath);
             if (torrentsPath.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase))
@@ -96,7 +96,7 @@ namespace TorrentTest
                 {
                     Console.WriteLine(e.Message);
                 }
-            }
+            }*/
         }
     } 
 }

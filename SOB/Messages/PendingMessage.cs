@@ -10,18 +10,14 @@ namespace TorrentClient.Messages
     public class PendingMessage
     {
         public NetworkStream Stream { get; set; }
-        public byte[] Message { get; set; }
-        public byte Type { get { return Message[4]; } }
-
-        public PendingMessage(NetworkStream stream, byte[] message)
-        {
-            this.Stream = stream;
-            this.Message = message;
-        }
+        public int PieceIndex { get; set; }
+        Guid guid { get; set; }
+        public byte[] EncodedMessage { get; set; }
+        public int Type { get; set; }
 
         public void Send()
         {
-            Stream.Write(Message, 0, Message.Length);
+            Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
         }
     }
 }
