@@ -49,8 +49,8 @@ namespace TorrentClient
             }
             stream = client.GetStream();
             Settings.isStopping = false;
-            buffer = new byte[Settings.torrentFileInfo.PiecesLength + 29];
-            stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + 29, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
+            buffer = new byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
+            stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
         }
         private void HandleRead(IAsyncResult ar)
         {
@@ -129,7 +129,7 @@ namespace TorrentClient
             try
             {
                 stream = client.GetStream();
-                stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + 26, new AsyncCallback(HandleRead), null);
+                stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null);
             }
             catch (Exception e)
             {
@@ -164,13 +164,13 @@ namespace TorrentClient
 
         public void SendMessage(int index)
         {
-            int length = Settings.torrentFileInfo.PiecesLength + 26;
+            int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
             byte[] message = new byte[length];
             Buffer.BlockCopy(BitConverter.GetBytes(index), 0, message, 0, 4);
             Buffer.BlockCopy(BitConverter.GetBytes(0), 0, message, 4, 4);
-            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 1);
-            Buffer.BlockCopy(BitConverter.GetBytes(0),0,message,9,1); // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
-            Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 10, 16);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
+            Buffer.BlockCopy(BitConverter.GetBytes(0),0,message,12,1); // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
+            Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
             Console.WriteLine(message.Length + "bytes sent");
             try
             {
@@ -190,15 +190,9 @@ namespace TorrentClient
                 byte[] message = new byte[length];
                 Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(piece.index), 0, message, 0, 4);
                 Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(piece.length), 0, message, 4, 4);
-                Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 1);
+                Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
                 message[12] = type; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
-                Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 10, 16);
-
-                //var lengthByte = BitConverter.GetBytes(piece.length);
-                //var indexByte = BitConverter.GetBytes(piece.index);
-                // Buffer.BlockCopy(indexByte, 0, message, 0, 4);
-                //message[4] = type;  // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
-                //Buffer.BlockCopy(lengthByte, 0, message, 5, 4);
+                Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16); 
                 Buffer.BlockCopy(piece.data, 0, message, Program.messageMetadataSize, piece.data.Length);
                 return message;
             }
