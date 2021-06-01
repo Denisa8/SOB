@@ -16,6 +16,7 @@ namespace TorrentClient
 {
     public class Program
     {
+        public static readonly int messageMetadataSize = 29; 
         public static List<PendingMessage> Incoming { get; set; } = new List<PendingMessage>();
         public static List<PendingMessage> Outgoing { get; set; } = new List<PendingMessage>(); // W tych dwoch listach sa wszystkie wiadomosci ktore trzeba przetworzyc
         public static ConcurrentDictionary<int, Peer> Peers { get; } = new ConcurrentDictionary<int, Peer>();
@@ -168,7 +169,7 @@ namespace TorrentClient
                                 continue;
                             }
                             var pendingMessage = Outgoing[0];
-                            Console.WriteLine("Sending ID: " + pendingMessage.PieceIndex + " from outgoing");
+                            Console.WriteLine("Sending ID: " + pendingMessage.PieceIndex + " from outgoing.");
                             pendingMessage.Send();
                             Outgoing.Remove(pendingMessage);
                         }

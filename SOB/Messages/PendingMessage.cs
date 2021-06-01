@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MiscUtil.Conversion;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -17,6 +18,10 @@ namespace TorrentClient.Messages
 
         public void Send()
         {
+            Console.WriteLine("PENDING_MESSAGE: " + PieceIndex + "---" + EndianBitConverter.Big.ToInt32(EncodedMessage, 8));
+
+
+
             Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
         }
     }
