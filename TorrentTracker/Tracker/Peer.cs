@@ -106,5 +106,10 @@ namespace TorrentTracker.Tracker
         {
             Tools.Send(client.GetStream(), new TransportObject(new InformPeerAboutNewReceivePiece(peer, file, index)),1000);
         }
+
+        public void InformPeerAboutNewFile(Guid peer, FileTorrent file)
+        {
+            Tools.Send(client.GetStream(), new TransportObject(new PeerReceiveFile(peer, file)));
+        }
     }
 }

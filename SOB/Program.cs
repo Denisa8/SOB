@@ -339,13 +339,7 @@ namespace TorrentClient
                 Console.Write(Settings.ID + " - ");
                 if (ob != null)
                 {
-                    if (ob.Type == typeof(ChangeSendDataPeer))
-                    {
-                        var csdp = ob.TryCast<ChangeSendDataPeer>();
-                        Settings.sendCorrectData = csdp.CorrectSendData;
-                        Console.WriteLine("ChangeSendDataPeer: " + csdp.CorrectSendData);
-                    }
-                    else if (ob.Type == typeof(List<ConnectedPeer>))
+                    if (ob.Type == typeof(List<ConnectedPeer>))
                     {
                         var lcp = ob.TryCast<List<ConnectedPeer>>();
 
@@ -419,6 +413,20 @@ namespace TorrentClient
                             if (p.Files[ipa.File].Pieces.Contains(ipa.Piece))
                             {
                                 p.Files[ipa.File].Pieces.Add(ipa.Piece);
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                    else if (ob.Type == typeof(PeerReceiveFile))
+                    {
+                        var ipa = ob.TryCast<PeerReceiveFile>();
+                        Console.WriteLine("Receive file: " + ipa.ID);
+                        try
+                        {
+                            var p = AvailablePeersOnTracker.First(x => x.ID == ipa.ID);
+                            if (!p.Files.ContainsKey(ipa.File.ID))
+                            {
+                                p.Files.Add(ipa.File.ID,ipa.File);
                             }
                         }
                         catch (Exception) { }
