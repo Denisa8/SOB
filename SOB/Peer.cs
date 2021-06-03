@@ -84,6 +84,7 @@ namespace TorrentClient
                         }
                         else
                         {
+                            Console.WriteLine("PieceIndex = " + id);
                             var result = TorrentFileInfo.CheckPieceHash(b, id);
                             if (!result)
                                 Console.WriteLine("Odebrano błędny fragment");//wysłać info na serwer

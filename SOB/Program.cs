@@ -180,7 +180,7 @@ namespace TorrentClient
                     {
                         while (!Settings.isStopping)
                         {
-                            Console.WriteLine("Incoming.Count = " + Incoming.Count + "--------------");
+                            Console.WriteLine("Incoming.Count = " + Incoming.Count);
                             if (Incoming.Count == 0)
                             {
                                 Thread.Sleep(5000);
@@ -191,16 +191,17 @@ namespace TorrentClient
                             if (pendingMessage.Type == 1)
                             {
                                 int id = EndianBitConverter.Big.ToInt32(pendingMessage.EncodedMessage, 0); //tutaj masz, który kawałek Ci przyszedł
-
-                                if (Settings.ReadPieces[id] == true) // jesli juz mamy taka czesc to zignorowac wiadomosc
+                                Console.WriteLine(pendingMessage.PieceIndex + " --- TYPE 1");
+                                if (Settings.ReadPieces[pendingMessage.PieceIndex] == true) // jesli juz mamy taka czesc to zignorowac wiadomosc
                                 {
+                                    Console.WriteLine(pendingMessage.PieceIndex + " --- Got it");
                                     Incoming.Remove(pendingMessage);
                                     continue;
                                 }
                                 Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " from incoming");
-                                Settings.torrentFileInfo.WriteFilePiece(id, pendingMessage.EncodedMessage);
-                                if (id < Settings.ReadPieces.Length)
-                                    Settings.ReadPieces[id] = true;
+                                Settings.torrentFileInfo.WriteFilePiece(pendingMessage.PieceIndex, pendingMessage.EncodedMessage);
+                                if (pendingMessage.PieceIndex < Settings.ReadPieces.Length)
+                                    Settings.ReadPieces[pendingMessage.PieceIndex] = true;
 
                                 Incoming.Remove(pendingMessage);
                             }
@@ -339,13 +340,7 @@ namespace TorrentClient
                 Console.Write(Settings.ID + " - ");
                 if (ob != null)
                 {
-                    if (ob.Type == typeof(ChangeSendDataPeer))
-                    {
-                        var csdp = ob.TryCast<ChangeSendDataPeer>();
-                        Settings.sendCorrectData = csdp.CorrectSendData;
-                        Console.WriteLine("ChangeSendDataPeer: " + csdp.CorrectSendData);
-                    }
-                    else if (ob.Type == typeof(List<ConnectedPeer>))
+                    if (ob.Type == typeof(List<ConnectedPeer>))
                     {
                         var lcp = ob.TryCast<List<ConnectedPeer>>();
 
@@ -419,6 +414,20 @@ namespace TorrentClient
                             if (p.Files[ipa.File].Pieces.Contains(ipa.Piece))
                             {
                                 p.Files[ipa.File].Pieces.Add(ipa.Piece);
+                            }
+                        }
+                        catch (Exception) { }
+                    }
+                    else if (ob.Type == typeof(PeerReceiveFile))
+                    {
+                        var ipa = ob.TryCast<PeerReceiveFile>();
+                        Console.WriteLine("Receive file: " + ipa.ID);
+                        try
+                        {
+                            var p = AvailablePeersOnTracker.First(x => x.ID == ipa.ID);
+                            if (!p.Files.ContainsKey(ipa.File.ID))
+                            {
+                                p.Files.Add(ipa.File.ID,ipa.File);
                             }
                         }
                         catch (Exception) { }

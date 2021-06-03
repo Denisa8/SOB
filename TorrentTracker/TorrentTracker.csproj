@@ -144,6 +144,7 @@
     <Compile Include="Tracker\Data\TransportObject.cs" />
     <Compile Include="Tracker\Peer.cs" />
     <Compile Include="Tracker\PeerListener.cs" />
+    <Compile Include="Tracker\PeerReceiveFile.cs" />
     <Compile Include="Tracker\Tools.cs" />
     <Compile Include="Tracker\Tracker.cs" />
     <Compile Include="Tracker\TrackerListener.cs" />

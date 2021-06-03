@@ -59,6 +59,11 @@ namespace TorrentTracker.Tracker
                     {
                         var f = ob.TryCast<FileTorrent>();
                         peer.Files.Add(f.ID, f);
+                        foreach (var p in Tracker.Peers)
+                        {
+                            if (peer.ID != p.Key)
+                                p.Value.InformPeerAboutNewFile(peer.ID, f);
+                        }
                     }
                 }
                 catch (Exception) { }
