@@ -22,8 +22,9 @@ namespace TorrentTracker
         public override void Dispose()
         {
             //wy³¹czenie trackera
-            Tracker.Tracker.GetInstance().Close();
+            //Tracker.Tracker.GetInstance().Close();
             base.Dispose();
         }
+        
     }
 }

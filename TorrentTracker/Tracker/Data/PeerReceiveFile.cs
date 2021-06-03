@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using TorrentTracker.Tracker.Data;
 
-namespace TorrentTracker.Tracker
+namespace TorrentTracker.Tracker.Data
 {
     [Serializable]
     public class PeerReceiveFile

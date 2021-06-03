@@ -43,8 +43,7 @@ namespace TorrentTracker.Tracker
                 }
                 catch (Exception) { }
             }
-
-            timer.Change(10000, Timeout.Infinite);
+            timer.Change(1000, Timeout.Infinite);
         }
 
         public static void Init(string ip, int port)
@@ -73,6 +72,7 @@ namespace TorrentTracker.Tracker
                     p.Value.Close();
                 }
             }
+            throw new Exception();
         }
 
         public void ChangeAvailablePeer(Guid guid, bool available)
