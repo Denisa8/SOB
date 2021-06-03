@@ -66,7 +66,7 @@ namespace TorrentClient
                     int length = EndianBitConverter.Big.ToInt32(buffer, 4);
                     int torrentHash = EndianBitConverter.Big.ToInt32(buffer, 8);
                     int type = buffer[12];
-                    var idS = buffer.Skip(12).Take(16).ToArray();
+                    var idS = buffer.Skip(13).Take(16).ToArray();
                     Guid guid = new Guid(idS);
                     Console.WriteLine(Settings.ID);
                     byte[] b = buffer.Skip(Program.messageMetadataSize).Take(length).ToArray();
@@ -193,7 +193,8 @@ namespace TorrentClient
                 Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(piece.length), 0, message, 4, 4);
                 Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
                 message[12] = type; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
-                Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16); 
+                Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
+                Guid guid = new Guid(Settings.ID.ToByteArray()); 
                 Buffer.BlockCopy(piece.data, 0, message, Program.messageMetadataSize, piece.data.Length);
                 return message;
             }

@@ -350,7 +350,7 @@ namespace TorrentClient
                         foreach (var l in lcp)
                         {
                             AvailablePeersOnTracker.Add(l);
-                            Peer p1 = new Peer();
+                            Peer p1 = new Peer(); 
                             p1.ConnectToPeer(l.Port);
                             //if (p1.IsConnected)
                             //{
