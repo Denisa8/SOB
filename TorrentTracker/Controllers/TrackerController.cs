@@ -18,12 +18,13 @@ namespace TorrentTracker.Controllers
         }
 
         [HttpGet]
-        [Route("tracker/change-available/{id:guid}/{available:bool}")]
-        public IHttpActionResult SetAvailable(Guid id, bool available)
+        [Route("tracker/change-available/{id}/{available}")]
+        public IHttpActionResult SetAvailable([FromUri]string id, [FromUri] bool available)
         {
             try
             {
-                Tracker.Tracker.GetInstance().ChangeAvailablePeer(id, available);
+                Guid g =new Guid(id);
+                Tracker.Tracker.GetInstance().ChangeAvailablePeer(g, available);
                 return Ok();
             }
             catch (IOException e) { return InternalServerError(e); }

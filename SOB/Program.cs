@@ -1,4 +1,5 @@
-﻿using MonoTorrent;
+﻿using MiscUtil.Conversion;
+using MonoTorrent;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace TorrentClient
 {
     public class Program
     {
-        public static readonly int messageMetadataSize = 29; 
+        public static readonly int messageMetadataSize = 29;
         public static List<PendingMessage> Incoming { get; set; } = new List<PendingMessage>();
         public static List<PendingMessage> Outgoing { get; set; } = new List<PendingMessage>(); // W tych dwoch listach sa wszystkie wiadomosci ktore trzeba przetworzyc
         public static ConcurrentDictionary<int, Peer> Peers { get; } = new ConcurrentDictionary<int, Peer>();
@@ -119,12 +120,12 @@ namespace TorrentClient
                     #region wysylanie zapytan o kolejne czesci
                     new Thread(new ThreadStart(() =>
                     {
-                    while (!Settings.isStopping)
-                    {
+                        while (!Settings.isStopping)
+                        {
 
-                        Thread.Sleep(5000);
-                        Console.WriteLine("---- client.port: " + Settings.port);
-                        Console.WriteLine("Having " + Settings.ReadPieces.Where(ffs => ffs == true).Count()  + " pieces");
+                            Thread.Sleep(5000);
+                            Console.WriteLine("---- client.port: " + Settings.port);
+                            Console.WriteLine("Having " + Settings.ReadPieces.Where(ffs => ffs == true).Count() + " pieces");
 
                             var keys = Peers.Keys;
                             Console.WriteLine("---- Peer.Peers.count = " + keys.Count());
@@ -149,7 +150,7 @@ namespace TorrentClient
                                             continue;
 
                                         Console.WriteLine("Sending request for ID: " + i + " to " + availablePeer.Port);
-
+                                        //tutaj te kawałki sprawdzic
                                         Peers[key].SendMessage(i);
 
                                         Console.WriteLine("Request for ID: " + i + " sent");
@@ -186,10 +187,10 @@ namespace TorrentClient
                                 continue;
                             }
                             var pendingMessage = Incoming[0];
-                            Console.WriteLine("Processing ID: " + pendingMessage.PieceIndex +  " from incoming");
+                            Console.WriteLine("Processing ID: " + pendingMessage.PieceIndex + " from incoming");
                             if (pendingMessage.Type == 1)
                             {
-                                int id = BitConverter.ToInt32(pendingMessage.EncodedMessage, 0); //tutaj masz, który kawałek Ci przyszedł
+                                int id = EndianBitConverter.Big.ToInt32(pendingMessage.EncodedMessage, 0); //tutaj masz, który kawałek Ci przyszedł
 
                                 if (Settings.ReadPieces[id] == true) // jesli juz mamy taka czesc to zignorowac wiadomosc
                                 {
@@ -203,10 +204,10 @@ namespace TorrentClient
 
                                 Incoming.Remove(pendingMessage);
                             }
-                            else if (pendingMessage.Type == 0) 
+                            else if (pendingMessage.Type == 0)
                             {
-                                int type = 1; 
-                                var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex),1);// wczytaj piece jako tablice bajtow);
+                                int type = 1;
+                                var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
                                 Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " to outgoing");
                                 Outgoing.Add(new PendingMessage
                                 {
@@ -256,13 +257,13 @@ namespace TorrentClient
         {
             if (args.Length == 0) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
             {
-                 torrentsPath = @"D:\a\Bees.torrent";
-                PathSource = @"D:\a\Bees.txt";
-                PathNew = @"D:\a\Downloaded\Bees.torrent";
-                Settings.port = 1301;
-              /*  torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+                /*torrentsPath = @"D:\a\Bees.torrent";
+             PathSource = @"D:\a\Bees.txt";
+             PathNew = @"D:\a\Downloaded\Bees.torrent";*/
+             Settings.port = 1301;
+                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
                 PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
+                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -272,14 +273,14 @@ namespace TorrentClient
             }
 
             if (args.Length == 1) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
-            {
+            {/*
                 torrentsPath = @"D:\a\Bees.torrent";
                 PathSource = @"D:\a\Bees.txt";
-                PathNew = @"D:\a\Downloaded\Bees.torrent";
+                PathNew = @"D:\a\Downloaded\Bees.torrent";*/
                 Settings.port = int.Parse(args[0]);
-              /*  torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
-                PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
+                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+                  PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
+                  PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";

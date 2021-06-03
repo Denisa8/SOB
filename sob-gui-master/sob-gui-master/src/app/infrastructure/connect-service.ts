@@ -18,16 +18,18 @@ export class ConnectService {
         return this.httpClient.get<PeerDTO[]>(this.SERVER_URL + url);
     }
 
-    public changeAvailable(id: Guid, available: boolean) {
+    public changeAvailable(id: string, available: boolean) {
         console.log('changeAvailable()');
         console.log(id);
         console.log(available);
 
         const url = '/tracker/change-available/';
-        this.httpClient.get(this.SERVER_URL + url + id.toString() + '/' + available);
+        this.httpClient.get(this.SERVER_URL + url + id.toString() + '/' + available).subscribe(result => {
+		console.log(result);
+    });
     }
 
-    public sendBadData(id: Guid, correctdata: boolean) {
+    public sendBadData(id: string, correctdata: boolean) {
         console.log('sendBadData()');
         console.log(id);
         console.log(correctdata);

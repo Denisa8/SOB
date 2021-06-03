@@ -68,8 +68,7 @@ export class ContentTableComponent {
           if (value === null) {
             console.log('value is null');
             return;
-          }
-		  console.log(value); 
+          } 
           this.peers = value;
         },
         error => {
@@ -79,18 +78,18 @@ export class ContentTableComponent {
     }, 1000);
   });}
 
-  changeAvailable(event: Event) {
-    let elementid: string = (event.target as Element).id;
-    let available: boolean = this.getAvailableByid(elementid);
+  changeAvailable(event: Event, data: PeerDTO) {
+    let elementid: string = (event.target as Element).id; 
     
-    this.connectService.changeAvailable(Guid.parse(elementid), available);
+    this.connectService.changeAvailable(data.id, data.available);
+	data.available = !data.available;
   }
 
   sendBadData(event: Event) {
     let elementid: string = (event.target as Element).id;
     let correctdata: boolean = this.getCorrectSendDataByid(elementid);
 
-    this.connectService.sendBadData(Guid.parse(elementid), correctdata);
+    this.connectService.sendBadData(elementid, correctdata);
   }
 
   getAvailableByid(elementid: string): boolean {
