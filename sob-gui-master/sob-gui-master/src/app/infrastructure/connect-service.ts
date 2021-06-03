@@ -35,6 +35,7 @@ export class ConnectService {
         console.log(correctdata);
 
         const url = '/tracker/change-send-data/';
-        this.httpClient.get(this.SERVER_URL + url + id + '/' + correctdata);
-    }
+        this.httpClient.get(this.SERVER_URL + url + id + '/' + correctdata).subscribe(result => {
+		console.log(result);
+    });}
 }

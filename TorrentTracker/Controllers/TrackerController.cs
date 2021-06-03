@@ -32,12 +32,13 @@ namespace TorrentTracker.Controllers
         }
 
         [HttpGet]
-        [Route("tracker/change-send-data/{id:guid}/{correctdata:bool}")]
-        public IHttpActionResult SetCorrectSendData(Guid id, bool correctdata)
+        [Route("tracker/change-send-data/{id}/{correctdata}")]
+        public IHttpActionResult SetCorrectSendData([FromUri] string id, [FromUri] bool correctdata)
         {
             try
             {
-                Tracker.Tracker.GetInstance().ChangeSendDataPeer(id, correctdata);
+                Guid g = new Guid(id); 
+                Tracker.Tracker.GetInstance().ChangeSendDataPeer(g, correctdata);
                 return Ok();
             }
             catch (IOException e) { return InternalServerError(e); }

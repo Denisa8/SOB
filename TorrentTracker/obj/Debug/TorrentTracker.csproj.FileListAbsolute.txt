@@ -384,3 +384,4 @@ F:\Studia\Github\SOB\SOB\TorrentTracker\obj\Debug\TorrentTracker.csproj.CoreComp
 F:\Studia\Github\SOB\SOB\TorrentTracker\obj\Debug\TorrentTracker.csproj.CopyComplete
 F:\Studia\Github\SOB\SOB\TorrentTracker\obj\Debug\TorrentTracker.dll
 F:\Studia\Github\SOB\SOB\TorrentTracker\obj\Debug\TorrentTracker.pdb
+C:\Users\Admin\Desktop\SOB - projekt\TorrentTracker\obj\Debug\TorrentTracker.csprojAssemblyReference.cache
