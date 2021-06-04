@@ -5,11 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using TorrentClient.Messages;
+using TorrentTracker.Tracker;
+using TorrentTracker.Tracker.Data;
 
 namespace TorrentClient
 {
     public class Peer
     {
+        public Guid GUID { get; private set; }
         private TcpClient client { get; set; }
         public IPEndPoint EndPoint { get; private set; }
         private NetworkStream stream { get; set; }
@@ -20,13 +23,14 @@ namespace TorrentClient
         private int counter = 0;
         private int counterRead = 0;
         /*private*/
-        public Peer(TcpClient client)
+        public Peer(TcpClient client, Guid guid)
         {
+            GUID = guid;
             this.client = client;
         }
-        public Peer()
+        public Peer(Guid guid)
         {
-            
+            GUID = guid;
         }
 
         public void ConnectToPeer(int portPeer)
@@ -69,7 +73,7 @@ namespace TorrentClient
                     var idS = buffer.Skip(13).Take(16).ToArray();
                     Guid guid = new Guid(idS);
                     Console.WriteLine(Settings.ID);
-                    byte[] b = buffer.Skip(Program.messageMetadataSize).Take(length).ToArray();
+                    byte[] b = buffer.Skip(13).Take(16).ToArray();
 
                     buffer = new byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
                     Console.WriteLine("odczytano: " + id + " l " + length);
@@ -80,14 +84,21 @@ namespace TorrentClient
                         if (torrentHash != TorrentFileInfo.TorrentHash)
                         {
                             Console.WriteLine("Otrzymano hash: " + torrentHash + " ----- " + "Oczekiwany hash: " + TorrentFileInfo.TorrentHash);
-                            Console.WriteLine("Niewłaściwy hash pliku");//wysłać info na serwer 
+                            Console.WriteLine("Niewłaściwy hash pliku - banowanie peera");
+                            var transportObject = new TransportObject(new BanPeer { BanID = guid });
+                            Tools.Send(Program.clientTracker.GetStream(), transportObject);
                         }
                         else
                         {
                             Console.WriteLine("PieceIndex = " + id);
                             var result = TorrentFileInfo.CheckPieceHash(b, id);
                             if (!result)
-                                Console.WriteLine("Odebrano błędny fragment");//wysłać info na serwer
+                            {
+                                Console.WriteLine("Odebrano błędny fragment - banowanie peera");//wysłać info na serwer
+                                var transportObject = new TransportObject(new BanPeer { BanID = guid });
+                                Tools.Send(Program.clientTracker.GetStream(), transportObject);
+                            }
+                                
                             else
                             {
                                 Program.Incoming.Add(new PendingMessage
@@ -95,7 +106,8 @@ namespace TorrentClient
                                     PieceIndex = id,
                                     Stream = stream,
                                     EncodedMessage = b,
-                                    Type = type
+                                    Type = type,
+                                    Guid = guid
                                 });
                                 if (Settings.ReadPieces != null && id < Settings.ReadPieces.Length)
                                     Settings.ReadPieces[id] = true;
@@ -108,7 +120,8 @@ namespace TorrentClient
                         {
                             PieceIndex = id,
                             Stream = stream,
-                            Type = type
+                            Type = type,
+                            Guid = guid
                         });
 
                     }

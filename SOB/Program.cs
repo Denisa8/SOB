@@ -26,8 +26,9 @@ namespace TorrentClient
         private static TcpListener listener { get; set; }
         public static TcpClient clientTracker { get; private set; }
         static List<Guid> bannedPeers = new List<Guid>();
+        static Guid lastConnectedGuid;
         static Timer timerTracker;
-        static Peer peer;
+        //static Peer peer;
         public static string torrentsPath;
         public static string PathSource;
         public static string PathNew;
@@ -47,8 +48,9 @@ namespace TorrentClient
             TcpClient client = listener.EndAcceptTcpClient(ar);
             listener.BeginAcceptTcpClient(new AsyncCallback(HandlePeerConnection), null);
             var p = ((IPEndPoint)client.Client.RemoteEndPoint).Port;
-            Console.WriteLine("Połączenie od:  " + p + "\t(moj port: " + Settings.port + ")"); //sprawdz czy dobry port
-            AddPeer(new Peer(client), p);
+
+            Console.WriteLine("Połączenie od:  " + p + "\t(moj port: " + Settings.port + ") -- GUID = " + lastConnectedGuid) ; //sprawdz czy dobry port
+            AddPeer(new Peer(client,lastConnectedGuid), p);
         }
         public static void AddPeer(Peer peer, int p)
         {
@@ -86,7 +88,7 @@ namespace TorrentClient
                     }
                     #endregion
                     #region Utworzenie peera
-                    peer = new Peer();
+                    //peer = new Peer();
                     Settings.ReadPieces = new bool[Settings.torrentFileInfo.PiecesCount];
                     EnablePeerConnections(Settings.port);
                     #endregion
@@ -122,44 +124,63 @@ namespace TorrentClient
                     {
                         while (!Settings.isStopping)
                         {
-
                             Thread.Sleep(5000);
                             Console.WriteLine("---- client.port: " + Settings.port);
                             Console.WriteLine("Having " + Settings.ReadPieces.Where(ffs => ffs == true).Count() + " pieces");
-
-                            var keys = Peers.Keys;
-                            Console.WriteLine("---- Peer.Peers.count = " + keys.Count());
-                            foreach (int key in keys)
-                            {
-                                Peers.TryGetValue(key, out Peer p);
-                                Console.WriteLine("peer.Port: " + p.Port);
-                            }
 
                             if (Settings.ReadPieces.Where(x => x == false).Count() == 0) // klient posiada wszystkie czesci
                             {
                                 Thread.Sleep(10000); // narazie nie wiem co z tym zrobic. teraz jak wszystkie czesci sa pobrane to ten watek jest usypiany
                                 continue;
                             }
-                            for (int i = 0; i < Settings.ReadPieces.Length; i++)
+
+                            var peersAvailableOnTracker = AvailablePeersOnTracker.ToArray();
+
+                            for (int i = 0; i < Settings.ReadPieces.Length;)
                             {
                                 if (Settings.ReadPieces[i] == false)
                                 {
-                                    foreach (int key in keys)
+                                    List<Peer> peersThatICanFinallySendRequestTo = new List<Peer>(); // Do tej listy zbierane sa wszystkie peery z danym kawalkiem
+                                    foreach (ConnectedPeer connectedPeer in peersAvailableOnTracker)
                                     {
-                                        if (!Peers.TryGetValue(key, out Peer availablePeer))
-                                            continue;
-
-                                        Console.WriteLine("Sending request for ID: " + i + " to " + availablePeer.Port);
-                                        //tutaj te kawałki sprawdzic
-                                        Peers[key].SendMessage(i);
-
-                                        Console.WriteLine("Request for ID: " + i + " sent");
+                                        if (connectedPeer.Files.TryGetValue(TorrentFileInfo.TorrentHash.ToString(), out FileTorrent fileTorrent))
+                                        {
+                                            if (fileTorrent.Pieces.Contains(i)) // ustalenie czy dany peer ma kawalek
+                                            {
+                                                foreach(KeyValuePair<int, Peer> pair in Peers)
+                                                {
+                                                    Console.WriteLine("Comparing GUIDS: " + connectedPeer.ID + " <-----> " + pair.Value.GUID);
+                                                    if((pair.Value.GUID == connectedPeer.ID) && (!bannedPeers.Contains(pair.Value.GUID)))
+                                                    {
+                                                        Console.WriteLine("Adding to list peer with port: " + pair.Value.Port);
+                                                        peersThatICanFinallySendRequestTo.Add(pair.Value);
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
+                                    if (peersThatICanFinallySendRequestTo.Count == 0)
+                                    {
+                                        Console.WriteLine("No peers with needed piece");
+                                    }
+                                    else
+                                    {
+                                        Random r = new Random();
+                                        var index = r.Next(peersThatICanFinallySendRequestTo.Count);
+                                        Console.WriteLine("Sending request to peer with index: " + index);
+                                        peersThatICanFinallySendRequestTo[index].SendMessage(i); // wysylanie zapytania do losowego peera z listy, zeby rozkladac ruch
+                                    }
+                                    if (Settings.ReadPieces[i] == true)
+                                    {
+                                        Console.WriteLine("Piece " + i + " aquired. Moving to the next piece.");
+                                        i++;
+                                    }               
                                 }
                             }
                         }
                     })).Start();
-                    #endregion przetwarzanie zapytan wychodzacych
+                    #endregion
+                    # region przetwarzanie zapytan wychodzacych
                     new Thread(new ThreadStart(() =>
                     {
                         while (!Settings.isStopping)
@@ -175,7 +196,8 @@ namespace TorrentClient
                             Outgoing.Remove(pendingMessage);
                         }
                     })).Start();
-                    // przetwarzanie przychodzacych wiadomosci
+                    #endregion
+                    #region przetwarzanie przychodzacych wiadomosci
                     new Thread(new ThreadStart(() =>
                     {
                         while (!Settings.isStopping)
@@ -186,27 +208,37 @@ namespace TorrentClient
                                 Thread.Sleep(5000);
                                 continue;
                             }
-                            var pendingMessage = Incoming[0];
-                            Console.WriteLine("Processing ID: " + pendingMessage.PieceIndex + " from incoming");
+                            
+                            
+                            var pendingMessage = Incoming[0];                  
+                            if(bannedPeers.Contains(pendingMessage.Guid))
+                            {
+                                Incoming.Remove(pendingMessage);
+                                continue;
+                            }
                             if (pendingMessage.Type == 1)
                             {
+                                Console.WriteLine("Got piece with index: " + pendingMessage.PieceIndex);
                                 int id = EndianBitConverter.Big.ToInt32(pendingMessage.EncodedMessage, 0); //tutaj masz, który kawałek Ci przyszedł
-                                Console.WriteLine(pendingMessage.PieceIndex + " --- TYPE 1");
                                 if (Settings.ReadPieces[pendingMessage.PieceIndex] == true) // jesli juz mamy taka czesc to zignorowac wiadomosc
                                 {
                                     Console.WriteLine(pendingMessage.PieceIndex + " --- Got it");
                                     Incoming.Remove(pendingMessage);
-                                    continue;
                                 }
-                                Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " from incoming");
-                                Settings.torrentFileInfo.WriteFilePiece(pendingMessage.PieceIndex, pendingMessage.EncodedMessage);
-                                if (pendingMessage.PieceIndex < Settings.ReadPieces.Length)
+                                else
+                                {
+                                    //  Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " from incoming");
+                                    Settings.torrentFileInfo.WriteFilePiece(pendingMessage.PieceIndex, pendingMessage.EncodedMessage);
                                     Settings.ReadPieces[pendingMessage.PieceIndex] = true;
 
-                                Incoming.Remove(pendingMessage);
+                                    //  Console.WriteLine("Wysylanie na tracker ze otrzymano " + pendingMessage.PieceIndex + "czesc pliku " + torrent.Name);
+                                    var receivePieceFile = new ReceivePieceFile(torrent.Name, pendingMessage.PieceIndex);       ////////// Zmiana
+                                    Incoming.Remove(pendingMessage);
+                                }
                             }
                             else if (pendingMessage.Type == 0)
                             {
+                                Console.WriteLine("Got request for piece: " + pendingMessage.PieceIndex);
                                 int type = 1;
                                 var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
                                 Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " to outgoing");
@@ -225,7 +257,7 @@ namespace TorrentClient
                             Incoming.Remove(pendingMessage);
                         }
                     })).Start();
-
+                    #endregion
 
                     while (true)
                     { }
@@ -258,13 +290,13 @@ namespace TorrentClient
         {
             if (args.Length == 0) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
             {
-                /*torrentsPath = @"D:\a\Bees.torrent";
+                torrentsPath = @"D:\a\Bees.torrent";
              PathSource = @"D:\a\Bees.txt";
-             PathNew = @"D:\a\Downloaded\Bees.torrent";*/
+             PathNew = @"D:\a\Downloaded\Bees.torrent";
              Settings.port = 1301;
-                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+               /* torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
                 PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";
+                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -274,14 +306,14 @@ namespace TorrentClient
             }
 
             if (args.Length == 1) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
-            {/*
+            {
                 torrentsPath = @"D:\a\Bees.torrent";
                 PathSource = @"D:\a\Bees.txt";
-                PathNew = @"D:\a\Downloaded\Bees.torrent";*/
+                PathNew = @"D:\a\Downloaded\Bees.torrent";
                 Settings.port = int.Parse(args[0]);
-                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+              /*  torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
                   PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                  PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";
+                  PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -350,7 +382,7 @@ namespace TorrentClient
                         foreach (var l in lcp)
                         {
                             AvailablePeersOnTracker.Add(l);
-                            Peer p1 = new Peer(); 
+                            Peer p1 = new Peer(l.ID); 
                             p1.ConnectToPeer(l.Port);
                             //if (p1.IsConnected)
                             //{
@@ -366,7 +398,8 @@ namespace TorrentClient
                         var cp = ob.TryCast<ConnectedPeer>();
                         Console.WriteLine("Connected new peer: " + cp.ID);
                         AvailablePeersOnTracker.Add(cp);
-                        Peer p1 = new Peer();
+                        Peer p1 = new Peer(cp.ID);
+                        lastConnectedGuid = p1.GUID;
                         p1.ConnectToPeer(cp.Port);
                         //if (p1.IsConnected)
                         //{
