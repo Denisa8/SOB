@@ -12,16 +12,17 @@ namespace TorrentClient
 {
     public class Peer
     {
-        public Guid GUID { get; private set; }
+        public Guid GUID { get; set; }
         private TcpClient client { get; set; }
         public IPEndPoint EndPoint { get; private set; }
-        private NetworkStream stream { get; set; }
+        public NetworkStream stream { get; set; }
         public bool IsConnected;
         public int Port { get { return EndPoint.Port; } }
         /*private*/
         public byte[] buffer;
         private int counter = 0;
         private int counterRead = 0;
+        public List<int> PieceRequestSent { get; set; } = new List<int>(); 
         /*private*/
         public Peer(TcpClient client, Guid guid)
         {
@@ -76,7 +77,7 @@ namespace TorrentClient
                     byte[] b = buffer.Skip(13).Take(16).ToArray();
 
                     buffer = new byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
-                    Console.WriteLine("odczytano: " + id + " l " + length);
+                    Console.WriteLine("odczytano typ: " + type + " id: " + id + " l " + length);
                     counter++;
                     Console.WriteLine("bytes: " + bytes);
                     if (type == 1)
@@ -116,6 +117,7 @@ namespace TorrentClient
                     }
                     else if(type == 0)
                     {
+                        Console.WriteLine("0000000 ==== " + Program.Incoming.Count);
                         Program.Incoming.Add(new PendingMessage
                         {
                             PieceIndex = id,
@@ -124,6 +126,26 @@ namespace TorrentClient
                             Guid = guid
                         });
 
+                    }
+                    else if(type == 2)
+                    {
+                        Program.Incoming.Add(new PendingMessage
+                        {
+                            PieceIndex = id,
+                            Stream = stream,
+                            Type = type,
+                            Guid = guid
+                        });
+                    }
+                    else if(type == 3)
+                    {
+                        Program.Incoming.Add(new PendingMessage
+                        {
+                            PieceIndex = id,
+                            Stream = stream,
+                            Type = type,
+                            Guid = guid
+                        });
                     }
                     else
                     {
@@ -176,6 +198,39 @@ namespace TorrentClient
             }
         }
 
+        public void SendGUIDRequest()
+        {
+            int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
+            byte[] message = new byte[length];
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 0, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
+            message[12] = 2; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
+            Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
+            Console.WriteLine(message.Length + "bytes sent");
+            try
+            {
+                stream.Write(message, 0, message.Length);
+            }
+            catch (Exception e)
+            {
+                //Disconnect
+            }
+        }
+
+        public static byte[] EncodeGUIDResponse()
+        {
+            int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
+            byte[] message = new byte[length];
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 0, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
+            message[12] = 3; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
+            Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
+
+            return message;
+        }
+
         public void SendMessage(int index)
         {
             int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
@@ -183,7 +238,7 @@ namespace TorrentClient
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(index), 0, message, 0, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
-            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0),0,message,12,1); // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0),0,message,12,1); // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
             Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
             Console.WriteLine(message.Length + "bytes sent");
             try
@@ -205,7 +260,7 @@ namespace TorrentClient
                 Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(piece.index), 0, message, 0, 4);
                 Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(piece.length), 0, message, 4, 4);
                 Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
-                message[12] = type; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci
+                message[12] = type; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
                 Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
                 Guid guid = new Guid(Settings.ID.ToByteArray()); 
                 Buffer.BlockCopy(piece.data, 0, message, Program.messageMetadataSize, piece.data.Length);

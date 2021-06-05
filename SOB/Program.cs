@@ -58,6 +58,10 @@ namespace TorrentClient
             peer.ConnectToPeer(p);
             if (!Program.Peers.TryAdd(rand.Next(), peer))
                 peer.Disconnect();
+            if(peer.GUID == new Guid())
+            {
+                peer.SendGUIDRequest();
+            }
         }
         static async Task Main(string[] args)
         {
@@ -149,26 +153,23 @@ namespace TorrentClient
                                             {
                                                 foreach(KeyValuePair<int, Peer> pair in Peers)
                                                 {
-                                                    Console.WriteLine("Comparing GUIDS: " + connectedPeer.ID + " <-----> " + pair.Value.GUID);
-                                                    if((pair.Value.GUID == connectedPeer.ID) && (!bannedPeers.Contains(pair.Value.GUID)))  
-                                                    {
-                                                        Console.WriteLine("Adding to list peer with port: " + pair.Value.Port);
-                                                        peersThatICanFinallySendRequestTo.Add(pair.Value);
-                                                    }
+                                                    if(((pair.Value.GUID == connectedPeer.ID) && (!bannedPeers.Contains(pair.Value.GUID)) && (!pair.Value.PieceRequestSent.Contains(i))))
+                                                        peersThatICanFinallySendRequestTo.Add(pair.Value);   
                                                 }
                                             }
                                         }
                                     }
                                     if (peersThatICanFinallySendRequestTo.Count == 0)
                                     {
-                                        Console.WriteLine("No peers with needed piece");
+                                        //Console.WriteLine("No peers with needed piece");
                                     }
                                     else
                                     {
                                         Random r = new Random();
                                         var index = r.Next(peersThatICanFinallySendRequestTo.Count);
-                                        Console.WriteLine("Sending request to peer with index: " + index);
+                                        Console.WriteLine("Sending request to peer with index: " + index + " for piece: " + i);
                                         peersThatICanFinallySendRequestTo[index].SendMessage(i); // wysylanie zapytania do losowego peera z listy, zeby rozkladac ruch
+                                        peersThatICanFinallySendRequestTo[index].PieceRequestSent.Add(i);
                                     }
                                     if (Settings.ReadPieces[i] == true)
                                     {
@@ -208,8 +209,7 @@ namespace TorrentClient
                                 Thread.Sleep(5000);
                                 continue;
                             }
-                            
-                            
+                                                    
                             var pendingMessage = Incoming[0];                  
                             if(bannedPeers.Contains(pendingMessage.Guid))
                             {
@@ -239,7 +239,6 @@ namespace TorrentClient
                             else if (pendingMessage.Type == 0)
                             {
                                 Console.WriteLine("Got request for piece: " + pendingMessage.PieceIndex);
-                                int type = 1;
                                 var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
                                 Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " to outgoing");
                                 Outgoing.Add(new PendingMessage
@@ -249,6 +248,38 @@ namespace TorrentClient
                                     Stream = pendingMessage.Stream,
                                     Type = 1
                                 });
+                                Incoming.Remove(pendingMessage);
+                            }
+                            else if(pendingMessage.Type == 2)
+                            {
+                                Console.WriteLine("Got GUID request");
+                                Outgoing.Add(new PendingMessage
+                                {
+                                    EncodedMessage = Peer.EncodeGUIDResponse(),
+                                    Type = 3,
+                                    Stream = pendingMessage.Stream
+                                });
+                                Incoming.Remove(pendingMessage);
+                                
+                            }
+                            else if(pendingMessage.Type == 3)
+                            {
+                                bool success = false;
+                                Console.WriteLine("Got GUID");
+
+                                foreach(KeyValuePair<int, Peer> peer in Peers)
+                                {
+                                    if(peer.Value.stream == pendingMessage.Stream)
+                                    {
+                                        peer.Value.GUID = pendingMessage.Guid;
+                                        success = true;
+                                        break;
+                                    }
+                                }
+                                if (!success)
+                                    Console.WriteLine("Couldnt save GUID");
+
+                                Incoming.Remove(pendingMessage);
                             }
                             else
                             {
