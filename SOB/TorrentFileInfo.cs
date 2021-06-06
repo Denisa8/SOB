@@ -58,6 +58,15 @@ namespace TorrentClient
             Console.WriteLine("Otrzymano prawidłowy fragment.");
             return true;
         }
+
+        public int GetSavedPiecesCount()
+        {
+             BinaryReader br = new BinaryReader(new FileStream(PathSource, FileMode.Open, FileAccess.Read));
+             long numBytes = new FileInfo(PathSource).Length;
+             decimal r1 = Decimal.Ceiling((decimal)numBytes / (decimal)PiecesLength);
+             return (int)r1;
+        }
+
         public Piece ReadFilePiece(int index)
         {
             try

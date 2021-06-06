@@ -104,18 +104,30 @@ namespace TorrentClient
                     clientTracker.Connect(Settings.trackerIp, Settings.trackerPort);
                     Console.WriteLine("Connected to tracker");
                     var stream = clientTracker.GetStream();
-
+                 
                     List<int> pieces = new List<int>();
-                    for (int i = 0; i < torrent.Pieces.Count; i++) pieces.Add(i);
+                    int pc = Settings.torrentFileInfo.GetSavedPiecesCount();
+                    
+                    for (int i=0;i<pc;i++)
+                    {
+                        Settings.ReadPieces[i] = true;
+                        pieces.Add(i);
+                    }
+
                     FileTorrent file = new FileTorrent(TorrentFileInfo.TorrentHash.ToString(), pieces, pieces.Count);
                     Files.TryAdd(TorrentFileInfo.TorrentHash.ToString(), file);
 
 
-                    if ((Settings.port == 1300)) // host na 1300 ma caly plik
-                        for (int i = 0; i < Settings.ReadPieces.Length; i++)
-                        {// TEMP 
-                            Settings.ReadPieces[i] = true;
-                        }
+                    //for (int i = 0; i < torrent.Pieces.Count; i++) { pieces.Add(i); };
+                    //FileTorrent file = new FileTorrent(TorrentFileInfo.TorrentHash.ToString(), pieces, pieces.Count);
+                    //Files.TryAdd(TorrentFileInfo.TorrentHash.ToString(), file);
+
+
+                    //if ((Settings.port == 1300)) // host na 1300 ma caly plik
+                    //    for (int i = 0; i < Settings.ReadPieces.Length; i++)
+                    //    {// TEMP 
+                    //        Settings.ReadPieces[i] = true;
+                    //    }
 
                     InitConnectToTracker connSettings = new InitConnectToTracker(Settings.ID, Settings.peerIp, Settings.port, Files.ToDictionary(x => x.Key, x => x.Value), bannedPeers);
                     TransportObject ob = new TransportObject(connSettings);
