@@ -26,13 +26,14 @@ namespace TorrentClient
         public static ConcurrentBag<ConnectedPeer> AvailablePeersOnTracker { get; } = new ConcurrentBag<ConnectedPeer>();
         private static TcpListener listener { get; set; }
         public static TcpClient clientTracker { get; private set; }
-        static List<Guid> bannedPeers = new List<Guid>();
+        public static List<Guid> bannedPeers = new List<Guid>();
         static Guid lastConnectedGuid;
         static Timer timerTracker;
         //static Peer peer;
         public static string torrentsPath;
         public static string PathSource;
         public static string PathNew;
+        private static DateTime LastSentRequest = new DateTime();
         public static void EnablePeerConnections(int Port)
         {
             Settings.port = Port;
@@ -163,9 +164,18 @@ namespace TorrentClient
                                             }
                                         }
                                     }
-                                    if (peersThatICanFinallySendRequestTo.Count == 0)
+                                    if (peersThatICanFinallySendRequestTo.Count == 0) // jesli nie ma zadnych dostepnych peerow 
                                     {
                                         //Console.WriteLine("No peers with needed piece");
+                                        var x = (DateTime.Now - LastSentRequest).TotalSeconds;
+                                        if (x > 2) // oraz ostatni request zostal wyslany 2 minuty temu
+                                        {
+                                            foreach (KeyValuePair<int, Peer> p in Peers) // resetuj status wyslania requestu o czesc u kazdego polaczonego peera 
+                                            {
+                                                if (p.Value.PieceRequestSent.Contains(i))
+                                                    p.Value.PieceRequestSent.Remove(i);
+                                            }
+                                        }
                                     }
                                     else
                                     {
@@ -174,6 +184,7 @@ namespace TorrentClient
                                         Console.WriteLine("Sending request to peer with index: " + index + " for piece: " + i);
                                         peersThatICanFinallySendRequestTo[index].SendMessage(i); // wysylanie zapytania do losowego peera z listy, zeby rozkladac ruch
                                         peersThatICanFinallySendRequestTo[index].PieceRequestSent.Add(i);
+                                        LastSentRequest = DateTime.Now;
                                     }
                                     if (Settings.ReadPieces[i] == true)
                                     {
@@ -242,39 +253,24 @@ namespace TorrentClient
                             }
                             else if (pendingMessage.Type == 0)
                             {
-                                Console.WriteLine("Got request for piece: " + pendingMessage.PieceIndex); 
-                                if (Settings.sendCorrectData)
-                                {
-                                    var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
+                                Console.WriteLine("Got request for piece: " + pendingMessage.PieceIndex);
 
-                                    Outgoing.Add(new PendingMessage
-                                    {
-                                        PieceIndex = pendingMessage.PieceIndex,
-                                        EncodedMessage = encodedMessage,
-                                        Stream = pendingMessage.Stream,
-                                        Type = 1
-                                    });
-                                }
-                                else
+                                var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
+
+                                Outgoing.Add(new PendingMessage
                                 {
-                                    Random rnd = new Random();
-                                    Byte[] bytes = new Byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
-                                    rnd.NextBytes(bytes);
-                                    Outgoing.Add(new PendingMessage
-                                    {
-                                        PieceIndex = pendingMessage.PieceIndex,
-                                        EncodedMessage = bytes,
-                                        Stream = pendingMessage.Stream,
-                                        Type = 1
-                                    });
-                                }
+                                    PieceIndex = pendingMessage.PieceIndex,
+                                    EncodedMessage = encodedMessage,
+                                    Stream = pendingMessage.Stream,
+                                    Type = 1
+                                });
+
                                 Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " to outgoing");
                                 
                                 Incoming.Remove(pendingMessage);
                             }
                             else if (pendingMessage.Type == 2)
                             {
-                                Console.WriteLine("Got GUID request");
                                 Outgoing.Add(new PendingMessage
                                 {
                                     EncodedMessage = Peer.EncodeGUIDResponse(pendingMessage.IndexPeer),
@@ -288,7 +284,6 @@ namespace TorrentClient
                             else if (pendingMessage.Type == 3)
                             {
                                 bool success = false;
-                                Console.WriteLine("Got GUID");
 
                                 foreach (KeyValuePair<int, Peer> peer in Peers)
                                 {

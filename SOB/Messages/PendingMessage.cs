@@ -18,8 +18,10 @@ namespace TorrentClient.Messages
         public int IndexPeer { get; set; }
         public void Send()
         {
-            if(Settings.sendCorrectData)
+            if (Settings.sendCorrectData || Type == 3) // To zeby sie GUID poprawnie zawsze wysylal
+            {
                 Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
+            }          
             else
             {
                 Random rnd = new Random();

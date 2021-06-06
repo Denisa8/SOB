@@ -22,6 +22,8 @@ namespace TorrentClient
         public byte[] buffer;
         private int counter = 0;
         private int counterRead = 0;
+        private int errorCounter = 0;  
+        
         public List<int> PieceRequestSent { get; set; } = new List<int>(); 
         /*private*/
         public Peer(TcpClient client, Guid guid)
@@ -34,6 +36,25 @@ namespace TorrentClient
             GUID = guid;
         }
 
+        public void ResetErrorCounter()
+        {
+            errorCounter = 0;
+        }
+        public void IncreaseErrorCounter(Guid GUID)
+        {
+            errorCounter++;
+            if(errorCounter >= Settings.maxErrorCount)
+            {
+                Console.WriteLine("Banning peer: " + GUID);
+                Program.bannedPeers.Add(GUID);
+                var transportObject = new TransportObject(new BanPeer { BanID = GUID });
+                Tools.Send(Program.clientTracker.GetStream(), transportObject);
+            }
+            else
+            {
+                Console.WriteLine("Received invalid message from " + GUID + " (" + errorCounter + "/" + Settings.maxErrorCount + ")");
+            }
+        }
         public void ConnectToPeer(int portPeer)
         {
             IPAddress hostadd = IPAddress.Parse("127.0.0.1");
@@ -86,9 +107,14 @@ namespace TorrentClient
                         if (torrentHash != TorrentFileInfo.TorrentHash)
                         {
                             Console.WriteLine("Otrzymano hash: " + torrentHash + " ----- " + "Oczekiwany hash: " + TorrentFileInfo.TorrentHash);
-                            Console.WriteLine("Niewłaściwy hash pliku - banowanie peera");
-                            var transportObject = new TransportObject(new BanPeer { BanID = guid });
-                            Tools.Send(Program.clientTracker.GetStream(), transportObject);
+                            Console.WriteLine("Niewłaściwy hash pliku.");
+                            
+                            var peers = Program.Peers.ToList();
+                            foreach (KeyValuePair<int, Peer> keyValuePair in peers)
+                            {
+                                if (keyValuePair.Value.stream == stream)
+                                    keyValuePair.Value.IncreaseErrorCounter(keyValuePair.Value.GUID);
+                            }
                         }
                         else
                         {
@@ -96,9 +122,15 @@ namespace TorrentClient
                             var result = TorrentFileInfo.CheckPieceHash(b, id);
                             if (!result)
                             {
-                                Console.WriteLine("Odebrano błędny fragment - banowanie peera");//wysłać info na serwer
-                                var transportObject = new TransportObject(new BanPeer { BanID = guid });
-                                Tools.Send(Program.clientTracker.GetStream(), transportObject);
+
+                                Console.WriteLine("Odebrano błędny fragment.");
+                                
+                                var peers = Program.Peers.ToList();
+                                foreach (KeyValuePair<int, Peer> keyValuePair in peers)
+                                {
+                                    if (keyValuePair.Value.stream == stream)
+                                        keyValuePair.Value.IncreaseErrorCounter(keyValuePair.Value.GUID); 
+                                }
                             }
                                 
                             else
@@ -118,7 +150,6 @@ namespace TorrentClient
                     }
                     else if(type == 0)
                     {
-                        Console.WriteLine("0000000 ==== " + Program.Incoming.Count);
                         Program.Incoming.Add(new PendingMessage
                         {
                             PieceIndex = id,
@@ -153,6 +184,13 @@ namespace TorrentClient
                     else
                     {
                         Console.WriteLine("Niepoprawny typ wiadomosci");
+
+                        var peers = Program.Peers.ToList();
+                        foreach (KeyValuePair<int, Peer> keyValuePair in peers)
+                        {
+                            if (keyValuePair.Value.stream == stream)
+                                keyValuePair.Value.IncreaseErrorCounter(keyValuePair.Value.GUID);
+                        }
                     }
 
                 }

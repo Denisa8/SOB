@@ -14,9 +14,10 @@ namespace TorrentClient
     public static readonly int trackerPort = 60000;
     public static Guid ID = Guid.NewGuid();
     public static bool availablePeer = true;
-    public static bool sendCorrectData = true;
+    public static bool sendCorrectData = false;
     public static bool isStopping = false;
     public static TorrentFileInfo torrentFileInfo = new TorrentFileInfo();
+    public static readonly int maxErrorCount = 10; // Po odebraniu 10 niepoprawnych wiadomosci od peera, peer zostanie zbanowany 
     public static bool[] ReadPieces { get; set; }
 
   }
