@@ -18,7 +18,15 @@ namespace TorrentClient.Messages
         public int IndexPeer { get; set; }
         public void Send()
         {
-            Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
+            if(Settings.sendCorrectData)
+                Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
+            else
+            {
+                Random rnd = new Random();
+                Byte[] bytes = new Byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
+                rnd.NextBytes(bytes);
+                Stream.Write(bytes, 0, bytes.Length);
+            }
         }
     }
 }

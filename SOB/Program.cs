@@ -246,6 +246,7 @@ namespace TorrentClient
                                 if (Settings.sendCorrectData)
                                 {
                                     var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
+
                                     Outgoing.Add(new PendingMessage
                                     {
                                         PieceIndex = pendingMessage.PieceIndex,
@@ -343,13 +344,13 @@ namespace TorrentClient
         {
             if (args.Length == 0) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
             {
-                /* torrentsPath = @"D:\a\Bees.torrent";
+               torrentsPath = @"D:\a\Bees.torrent";
               PathSource = @"D:\a\Bees.txt";
-              PathNew = @"D:\a\Downloaded\Bees.torrent";*/
+              PathNew = @"D:\a\Downloaded\Bees.torrent";
                 Settings.port = 1301;
-                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+                /*torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
                 PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";
+                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -360,13 +361,13 @@ namespace TorrentClient
 
             if (args.Length == 1) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
             {
-                /*torrentsPath = @"D:\a\Bees.torrent";
+               torrentsPath = @"D:\a\Bees.torrent";
                PathSource = @"D:\a\Bees.txt";
-               PathNew = @"D:\a\Downloaded\Bees.torrent";*/
+               PathNew = @"D:\a\Downloaded\Bees.torrent";
                Settings.port = int.Parse(args[0]);
-                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+              /*  torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
                    PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                   PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip"; 
+                   PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip"; */
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
