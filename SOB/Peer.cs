@@ -12,7 +12,7 @@ namespace TorrentClient
 {
     public class Peer
     {
-        public Guid GUID { get; set; }
+        public Guid GUID { get; set; } = Guid.Empty;
         private TcpClient client { get; set; }
         public IPEndPoint EndPoint { get; private set; }
         public NetworkStream stream { get; set; }
@@ -45,6 +45,7 @@ namespace TorrentClient
                 {
                     client.Connect(EndPoint);
                     IsConnected = true;
+                   
                 }
                 catch (Exception e)
                 {
@@ -134,7 +135,8 @@ namespace TorrentClient
                             PieceIndex = id,
                             Stream = stream,
                             Type = type,
-                            Guid = guid
+                            Guid = guid,
+                            IndexPeer = torrentHash
                         });
                     }
                     else if(type == 3)
@@ -144,7 +146,8 @@ namespace TorrentClient
                             PieceIndex = id,
                             Stream = stream,
                             Type = type,
-                            Guid = guid
+                            Guid = guid,
+                            IndexPeer = torrentHash
                         });
                     }
                     else
@@ -196,15 +199,14 @@ namespace TorrentClient
             {
                 // Disconnect();
             }
-        }
-
-        public void SendGUIDRequest()
+        } 
+        public void SendGUIDRequest(int count)
         {
             int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
             byte[] message = new byte[length];
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 0, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
-            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(count), 0, message, 8, 4);
             message[12] = 2; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
             Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
             Console.WriteLine(message.Length + "bytes sent");
@@ -218,13 +220,13 @@ namespace TorrentClient
             }
         }
 
-        public static byte[] EncodeGUIDResponse()
+        public static byte[] EncodeGUIDResponse(int indexPeer)
         {
             int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
             byte[] message = new byte[length];
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 0, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
-            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
+            Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(indexPeer), 0, message, 8, 4);
             message[12] = 3; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
             Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
 
@@ -271,11 +273,7 @@ namespace TorrentClient
                 Console.WriteLine(e.Message);
                 return null;
             }
-        }
-        public static void getType()
-        {
-
-        }
+        } 
         public void Disconnect()
         {
             if (IsConnected)

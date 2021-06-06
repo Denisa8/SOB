@@ -15,7 +15,7 @@ namespace TorrentClient.Messages
         public Guid Guid { get; set; }
         public byte[] EncodedMessage { get; set; }
         public int Type { get; set; }
-
+        public int IndexPeer { get; set; }
         public void Send()
         {
             Stream.Write(EncodedMessage, 0, EncodedMessage.Length);

@@ -17,6 +17,7 @@ namespace TorrentClient
 {
     public class Program
     {
+        public static int PeerCount = 1; 
         public static readonly int messageMetadataSize = 29;
         public static List<PendingMessage> Incoming { get; set; } = new List<PendingMessage>();
         public static List<PendingMessage> Outgoing { get; set; } = new List<PendingMessage>(); // W tych dwoch listach sa wszystkie wiadomosci ktore trzeba przetworzyc
@@ -49,19 +50,22 @@ namespace TorrentClient
             listener.BeginAcceptTcpClient(new AsyncCallback(HandlePeerConnection), null);
             var p = ((IPEndPoint)client.Client.RemoteEndPoint).Port;
 
-            Console.WriteLine("Połączenie od:  " + p + "\t(moj port: " + Settings.port + ") -- GUID = " + lastConnectedGuid) ; //sprawdz czy dobry port
-            AddPeer(new Peer(client,lastConnectedGuid), p); // <-------- Tutaj jak dolacza nowy peer do sieci to wszyscy lacza sie z nowym peerem bo maja jego guid (lastConnectedGuid) ale on sam nie moze dopasowac guidow i portow laczacych sie z nim peerow przez co caly peer nie bedzie dzialal poprawnie 
+            Console.WriteLine("Połączenie od:  " + p + "\t(moj port: " + Settings.port + ") -- GUID = " + lastConnectedGuid); //sprawdz czy dobry port
+            AddPeer(new Peer(client, lastConnectedGuid), p); 
+            // <-------- Tutaj jak dolacza nowy peer do sieci to wszyscy lacza sie z nowym peerem bo maja jego guid (lastConnectedGuid) 
+            //ale on sam nie moze dopasowac guidow i portow laczacych sie z nim peerow przez co caly peer nie bedzie dzialal poprawnie 
         }
         public static void AddPeer(Peer peer, int p)
         {
             Random rand = new Random();
-            peer.ConnectToPeer(p);
-            if (!Program.Peers.TryAdd(rand.Next(), peer))
+            peer.ConnectToPeer(p); 
+            if (!Program.Peers.TryAdd(PeerCount, peer))
                 peer.Disconnect();
-            if(peer.GUID == new Guid())
+            if (peer.GUID == Guid.Empty)
             {
-                peer.SendGUIDRequest();
+                peer.SendGUIDRequest(PeerCount);
             }
+            PeerCount++;
         }
         static async Task Main(string[] args)
         {
@@ -151,10 +155,10 @@ namespace TorrentClient
                                         {
                                             if (fileTorrent.Pieces.Contains(i)) // ustalenie czy dany peer ma kawalek
                                             {
-                                                foreach(KeyValuePair<int, Peer> pair in Peers)
+                                                foreach (KeyValuePair<int, Peer> pair in Peers)
                                                 {
-                                                    if(((pair.Value.GUID == connectedPeer.ID) && (!bannedPeers.Contains(pair.Value.GUID)) && (!pair.Value.PieceRequestSent.Contains(i))))
-                                                        peersThatICanFinallySendRequestTo.Add(pair.Value);   
+                                                    if (((pair.Value.GUID == connectedPeer.ID) && (!bannedPeers.Contains(pair.Value.GUID)) && (!pair.Value.PieceRequestSent.Contains(i))))
+                                                        peersThatICanFinallySendRequestTo.Add(pair.Value);
                                                 }
                                             }
                                         }
@@ -175,7 +179,7 @@ namespace TorrentClient
                                     {
                                         Console.WriteLine("Piece " + i + " aquired. Moving to the next piece.");
                                         i++;
-                                    }               
+                                    }
                                 }
                             }
                         }
@@ -209,9 +213,9 @@ namespace TorrentClient
                                 Thread.Sleep(5000);
                                 continue;
                             }
-                                                    
-                            var pendingMessage = Incoming[0];                  
-                            if(bannedPeers.Contains(pendingMessage.Guid))
+
+                            var pendingMessage = Incoming[0];
+                            if (bannedPeers.Contains(pendingMessage.Guid))
                             {
                                 Incoming.Remove(pendingMessage);
                                 continue;
@@ -238,38 +242,56 @@ namespace TorrentClient
                             }
                             else if (pendingMessage.Type == 0)
                             {
-                                Console.WriteLine("Got request for piece: " + pendingMessage.PieceIndex);
-                                var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
-                                Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " to outgoing");
-                                Outgoing.Add(new PendingMessage
+                                Console.WriteLine("Got request for piece: " + pendingMessage.PieceIndex); 
+                                if (Settings.sendCorrectData)
                                 {
-                                    PieceIndex = pendingMessage.PieceIndex,
-                                    EncodedMessage = encodedMessage,
-                                    Stream = pendingMessage.Stream,
-                                    Type = 1
-                                });
+                                    var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
+                                    Outgoing.Add(new PendingMessage
+                                    {
+                                        PieceIndex = pendingMessage.PieceIndex,
+                                        EncodedMessage = encodedMessage,
+                                        Stream = pendingMessage.Stream,
+                                        Type = 1
+                                    });
+                                }
+                                else
+                                {
+                                    Random rnd = new Random();
+                                    Byte[] bytes = new Byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
+                                    rnd.NextBytes(bytes);
+                                    Outgoing.Add(new PendingMessage
+                                    {
+                                        PieceIndex = pendingMessage.PieceIndex,
+                                        EncodedMessage = bytes,
+                                        Stream = pendingMessage.Stream,
+                                        Type = 1
+                                    });
+                                }
+                                Console.WriteLine("Saving piece: " + pendingMessage.PieceIndex + " to outgoing");
+                                
                                 Incoming.Remove(pendingMessage);
                             }
-                            else if(pendingMessage.Type == 2)
+                            else if (pendingMessage.Type == 2)
                             {
                                 Console.WriteLine("Got GUID request");
                                 Outgoing.Add(new PendingMessage
                                 {
-                                    EncodedMessage = Peer.EncodeGUIDResponse(),
+                                    EncodedMessage = Peer.EncodeGUIDResponse(pendingMessage.IndexPeer),
                                     Type = 3,
-                                    Stream = pendingMessage.Stream
+                                    Stream = pendingMessage.Stream,
+                                    IndexPeer = pendingMessage.IndexPeer
                                 });
                                 Incoming.Remove(pendingMessage);
-                                
+
                             }
-                            else if(pendingMessage.Type == 3)
+                            else if (pendingMessage.Type == 3)
                             {
                                 bool success = false;
                                 Console.WriteLine("Got GUID");
 
-                                foreach(KeyValuePair<int, Peer> peer in Peers)
+                                foreach (KeyValuePair<int, Peer> peer in Peers)
                                 {
-                                    if(peer.Value.stream == pendingMessage.Stream)
+                                    if (peer.Key == pendingMessage.IndexPeer)
                                     {
                                         peer.Value.GUID = pendingMessage.Guid;
                                         success = true;
@@ -321,13 +343,13 @@ namespace TorrentClient
         {
             if (args.Length == 0) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
             {
-                torrentsPath = @"D:\a\Bees.torrent";
-             PathSource = @"D:\a\Bees.txt";
-             PathNew = @"D:\a\Downloaded\Bees.torrent";
-             Settings.port = 1301;
-               /* torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+                /* torrentsPath = @"D:\a\Bees.torrent";
+              PathSource = @"D:\a\Bees.txt";
+              PathNew = @"D:\a\Downloaded\Bees.torrent";*/
+                Settings.port = 1301;
+                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
                 PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
+                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -338,13 +360,13 @@ namespace TorrentClient
 
             if (args.Length == 1) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
             {
-                torrentsPath = @"D:\a\Bees.torrent";
-                PathSource = @"D:\a\Bees.txt";
-                PathNew = @"D:\a\Downloaded\Bees.torrent";
-                Settings.port = int.Parse(args[0]);
-              /*  torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
-                  PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                  PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
+                /*torrentsPath = @"D:\a\Bees.torrent";
+               PathSource = @"D:\a\Bees.txt";
+               PathNew = @"D:\a\Downloaded\Bees.torrent";*/
+               Settings.port = int.Parse(args[0]);
+                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
+                   PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
+                   PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip"; 
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -413,7 +435,7 @@ namespace TorrentClient
                         foreach (var l in lcp)
                         {
                             AvailablePeersOnTracker.Add(l);
-                            Peer p1 = new Peer(l.ID); 
+                            Peer p1 = new Peer(l.ID);
                             p1.ConnectToPeer(l.Port);
                             //if (p1.IsConnected)
                             //{
@@ -491,7 +513,7 @@ namespace TorrentClient
                             var p = AvailablePeersOnTracker.First(x => x.ID == ipa.ID);
                             if (!p.Files.ContainsKey(ipa.File.ID))
                             {
-                                p.Files.Add(ipa.File.ID,ipa.File);
+                                p.Files.Add(ipa.File.ID, ipa.File);
                             }
                         }
                         catch (Exception) { }
