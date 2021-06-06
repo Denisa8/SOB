@@ -53,8 +53,6 @@ namespace TorrentClient
 
             Console.WriteLine("Połączenie od:  " + p + "\t(moj port: " + Settings.port + ") -- GUID = " + lastConnectedGuid); //sprawdz czy dobry port
             AddPeer(new Peer(client, lastConnectedGuid), p); 
-            // <-------- Tutaj jak dolacza nowy peer do sieci to wszyscy lacza sie z nowym peerem bo maja jego guid (lastConnectedGuid) 
-            //ale on sam nie moze dopasowac guidow i portow laczacych sie z nim peerow przez co caly peer nie bedzie dzialal poprawnie 
         }
         public static void AddPeer(Peer peer, int p)
         {
@@ -167,7 +165,7 @@ namespace TorrentClient
                                     if (peersThatICanFinallySendRequestTo.Count == 0) // jesli nie ma zadnych dostepnych peerow 
                                     {
                                         //Console.WriteLine("No peers with needed piece");
-                                        var x = (DateTime.Now - LastSentRequest).TotalSeconds;
+                                        var x = (DateTime.Now - LastSentRequest).TotalMinutes;
                                         if (x > 2) // oraz ostatni request zostal wyslany 2 minuty temu
                                         {
                                             foreach (KeyValuePair<int, Peer> p in Peers) // resetuj status wyslania requestu o czesc u kazdego polaczonego peera 
