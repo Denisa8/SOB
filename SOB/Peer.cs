@@ -75,7 +75,7 @@ namespace TorrentClient
                     var idS = buffer.Skip(13).Take(16).ToArray();
                     Guid guid = new Guid(idS);
                     Console.WriteLine(Settings.ID);
-                    byte[] b = buffer.Skip(13).Take(16).ToArray();
+                    byte[] b = buffer.Skip(29).ToArray();
 
                     buffer = new byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
                     Console.WriteLine("odczytano typ: " + type + " id: " + id + " l " + length);

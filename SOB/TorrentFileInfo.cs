@@ -64,7 +64,7 @@ namespace TorrentClient
           p.length = receivedBytes;
           Console.WriteLine(receivedBytes);
           p.data = bytes;
-          CheckReceivedPiece(bytes, index, receivedBytes);
+          //CheckReceivedPiece(bytes, index, receivedBytes);
         }
         return p;
       }
