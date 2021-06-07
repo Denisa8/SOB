@@ -151,8 +151,8 @@ namespace TorrentClient
                                     Type = type,
                                     Guid = guid
                                 });
-                                if (Settings.ReadPieces != null && id < Settings.ReadPieces.Length)
-                                    Settings.ReadPieces[id] = true;
+                                //if (Settings.ReadPieces != null && id < Settings.ReadPieces.Length)
+                                   // Settings.ReadPieces[id] = true;
                             }
                         }
                     }

@@ -101,7 +101,10 @@ namespace TorrentTracker.Tracker
                 p.CorrectSendData = ob.Value.SendCorrectData;
                 p.Files = new List<FileDTO>();
                 foreach (var o in ob.Value.Files)
-                    p.Files.Add(new FileDTO() { Filename = o.Key, Progress = (int)(o.Value.Pieces.Count / (float)o.Value.countPieces * 100.0) });
+                {
+                    var countPieces = o.Value.countPieces == 0 ? 1 : o.Value.countPieces;
+                    p.Files.Add(new FileDTO() { Filename = o.Key, Progress = (int)(o.Value.Pieces.Count / (float)countPieces * 100.0) });
+                }
                 p.ID = ob.Value.ID.ToString();
                 l.Add(p);
             }

@@ -152,16 +152,13 @@ namespace TorrentClient
                             {
                                 Thread.Sleep(10000); // narazie nie wiem co z tym zrobic. teraz jak wszystkie czesci sa pobrane to ten watek jest usypiany
                                 continue;
-                            }
-
-                            var peersAvailableOnTracker = AvailablePeersOnTracker.ToArray();
-
+                            } 
                             for (int i = 0; i < Settings.ReadPieces.Length;)
                             {
                                 if (Settings.ReadPieces[i] == false)
                                 {
                                     List<Peer> peersThatICanFinallySendRequestTo = new List<Peer>(); // Do tej listy zbierane sa wszystkie peery z danym kawalkiem
-                                    foreach (ConnectedPeer connectedPeer in peersAvailableOnTracker)
+                                    foreach (ConnectedPeer connectedPeer in AvailablePeersOnTracker)
                                     {
                                         if (connectedPeer.Files.TryGetValue(TorrentFileInfo.TorrentHash.ToString(), out FileTorrent fileTorrent))
                                         {
@@ -258,8 +255,10 @@ namespace TorrentClient
                                     Settings.ReadPieces[pendingMessage.PieceIndex] = true;
 
                                     //  Console.WriteLine("Wysylanie na tracker ze otrzymano " + pendingMessage.PieceIndex + "czesc pliku " + torrent.Name);
-                                    var receivePieceFile = new ReceivePieceFile(torrent.Name, pendingMessage.PieceIndex);       ////////// Zmiana
+                                    var receivePieceFile = new ReceivePieceFile(torrent.Name, pendingMessage.PieceIndex);  
+                                    Tools.Send(clientTracker.GetStream(), new TransportObject((object)receivePieceFile));
                                     Incoming.Remove(pendingMessage);
+
                                 }
                             }
                             else if (pendingMessage.Type == 0)
@@ -371,14 +370,14 @@ namespace TorrentClient
         private static void CheckArguments(string[] args)
         {
             if (args.Length == 0) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
-            {
+            {/*
                torrentsPath = @"D:\a\Bees.torrent";
               PathSource = @"D:\a\Bees.txt";
-              PathNew = @"D:\a\Downloaded\Bees.torrent";
+              PathNew = @"D:\a\Downloaded\Bees.torrent";*/
                 Settings.port = 1301;
-                /*torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
-                PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip";*/
+                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent"; 
+                PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia5.zip";
+                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia5.zip"; 
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -388,14 +387,14 @@ namespace TorrentClient
             }
 
             if (args.Length == 1) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
-            {
+            {/*
                torrentsPath = @"D:\a\Bees.torrent";
                PathSource = @"D:\a\Bees.txt";
-               PathNew = @"D:\a\Downloaded\Bees.torrent";
-               Settings.port = int.Parse(args[0]);
-              /*  torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
-                   PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
-                   PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia2.zip"; */
+               PathNew = @"D:\a\Downloaded\Bees.torrent"; */
+                Settings.port = int.Parse(args[0]);
+                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent"; 
+                PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
+                PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia.zip";
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -481,7 +480,7 @@ namespace TorrentClient
                         Console.WriteLine("Connected new peer: " + cp.ID);
                         AvailablePeersOnTracker.Add(cp);
                         Peer p1 = new Peer(cp.ID);
-                        lastConnectedGuid = p1.GUID;
+                        //lastConnectedGuid = p1.GUID;
                         p1.ConnectToPeer(cp.Port);
                         //if (p1.IsConnected)
                         //{

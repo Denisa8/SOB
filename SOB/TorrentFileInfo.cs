@@ -61,10 +61,16 @@ namespace TorrentClient
 
         public int GetSavedPiecesCount() 
         {
-             BinaryReader br = new BinaryReader(new FileStream(PathSource, FileMode.Open, FileAccess.Read));
-             long numBytes = new FileInfo(PathSource).Length;
-             decimal r1 = Decimal.Ceiling((decimal)numBytes / (decimal)PiecesLength); // czesci pobierane sa po polei wg indeksu, wiec rozmiar pliku na dysku / rozmiar czesci = ilosc posiadanych czesci
-             return (int)r1;
+            if (!File.Exists(PathSource))
+                return 0;
+            lock (lockObject)
+            {
+                //BinaryReader br = new BinaryReader(new FileStream(PathSource, FileMode.Open, FileAccess.Read));
+                long numBytes = new FileInfo(PathSource).Length;
+                decimal r1 = Decimal.Ceiling((decimal)numBytes / (decimal)PiecesLength); // czesci pobierane sa po polei wg indeksu, wiec rozmiar pliku na dysku / rozmiar czesci = ilosc posiadanych czesci
+            
+            return (int)r1;
+        }return 0;
         }
 
         public Piece ReadFilePiece(int index)
@@ -76,14 +82,17 @@ namespace TorrentClient
                 byte[] bytes = new byte[PiecesLength];
                 int numBytesToRead = PiecesLength;
                 long numBytesRead = index * PiecesLength;
-                using (BinaryReader reader = new BinaryReader(new FileStream(PathSource, FileMode.Open)))
+                lock (lockObject)
                 {
-                    reader.BaseStream.Seek(numBytesRead, SeekOrigin.Begin);
-                    var receivedBytes = reader.Read(bytes, 0, numBytesToRead);
-                    p.length = receivedBytes;
-                    Console.WriteLine(receivedBytes);
-                    p.data = bytes;
-                    //CheckReceivedPiece(bytes, index, receivedBytes);
+                    using (BinaryReader reader = new BinaryReader(new FileStream(PathSource, FileMode.Open)))
+                    {
+                        reader.BaseStream.Seek(numBytesRead, SeekOrigin.Begin);
+                        var receivedBytes = reader.Read(bytes, 0, numBytesToRead);
+                        p.length = receivedBytes;
+                        Console.WriteLine(receivedBytes);
+                        p.data = bytes;
+                        //CheckReceivedPiece(bytes, index, receivedBytes);
+                    }
                 }
                 return p;
             }
@@ -97,38 +106,41 @@ namespace TorrentClient
         {
             try
             {
-                using (FileStream fsSource = new FileStream(PathSource,
-                    FileMode.Open, FileAccess.Read))
+                lock (lockObject)
                 {
-                    byte[] bytes = new byte[PiecesLength];
-                    int numBytesToRead = PiecesLength;
-                    int numBytesRead = index * PiecesLength;
-                    while (numBytesToRead > 0)
+                    using (FileStream fsSource = new FileStream(PathSource,
+                    FileMode.Open, FileAccess.Read))
                     {
-                        int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
-                        if (n == 0)
-                            break;
-                        var hash = Hash(bytes);
-                        var result = hash.SequenceEqual(PieceHashes[0]);
-                        if (!result)
+                        byte[] bytes = new byte[PiecesLength];
+                        int numBytesToRead = PiecesLength;
+                        int numBytesRead = index * PiecesLength;
+                        while (numBytesToRead > 0)
                         {
-                            Console.WriteLine("Nie otrzymano prawidłowego fragmentu.");
-                            return;
+                            int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
+                            if (n == 0)
+                                break;
+                            var hash = Hash(bytes);
+                            var result = hash.SequenceEqual(PieceHashes[0]);
+                            if (!result)
+                            {
+                                Console.WriteLine("Nie otrzymano prawidłowego fragmentu.");
+                                return;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Otrzymano prawidłowy fragment.");
+                            }
+                            numBytesRead += n;
+                            numBytesToRead -= n;
                         }
-                        else
-                        {
-                            Console.WriteLine("Otrzymano prawidłowy fragment.");
-                        }
-                        numBytesRead += n;
-                        numBytesToRead -= n;
-                    }
-                    numBytesToRead = bytes.Length;
+                        numBytesToRead = bytes.Length;
 
-                    //using (FileStream fsNew = new FileStream(pathNew,
-                    //    FileMode.Create, FileAccess.Write))
-                    //{
-                    //    fsNew.Write(bytes, 0, numBytesToRead);
-                    //}
+                        //using (FileStream fsNew = new FileStream(pathNew,
+                        //    FileMode.Create, FileAccess.Write))
+                        //{
+                        //    fsNew.Write(bytes, 0, numBytesToRead);
+                        //}
+                    }
                 }
             }
             catch (FileNotFoundException ioEx)
