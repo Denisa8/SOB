@@ -200,6 +200,8 @@ namespace TorrentClient
                                         i++;
                                     }
                                 }
+                                else
+                                    i++;
                             }
                         }
                     })).Start();
@@ -255,7 +257,7 @@ namespace TorrentClient
                                     Settings.ReadPieces[pendingMessage.PieceIndex] = true;
 
                                     //  Console.WriteLine("Wysylanie na tracker ze otrzymano " + pendingMessage.PieceIndex + "czesc pliku " + torrent.Name);
-                                    var receivePieceFile = new ReceivePieceFile(torrent.Name, pendingMessage.PieceIndex);  
+                                    var receivePieceFile = new ReceivePieceFile(TorrentFileInfo.TorrentHash.ToString(), pendingMessage.PieceIndex);  
                                     Tools.Send(clientTracker.GetStream(), new TransportObject((object)receivePieceFile));
                                     Incoming.Remove(pendingMessage);
 
@@ -263,10 +265,15 @@ namespace TorrentClient
                             }
                             else if (pendingMessage.Type == 0)
                             {
+                                byte[] encodedMessage;
                                 Console.WriteLine("Got request for piece: " + pendingMessage.PieceIndex);
-
-                                var encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
-
+                                if (Settings.sendCorrectData)
+                                    encodedMessage = Peer.EncodePiece(Settings.torrentFileInfo.ReadFilePiece(pendingMessage.PieceIndex), 1);// wczytaj piece jako tablice bajtow);
+                                else
+                                {
+                                    encodedMessage = Peer.EncodeWrongPiece(pendingMessage.PieceIndex, 1);// wczytaj piece jako tablice bajtow); 
+                                    Console.WriteLine("Wysyłanie błędnej wiadomości");
+                                }
                                 Outgoing.Add(new PendingMessage
                                 {
                                     PieceIndex = pendingMessage.PieceIndex,

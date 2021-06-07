@@ -241,9 +241,7 @@ namespace TorrentClient
                 }
                 else
                 {
-                    Random rnd = new Random();
-                    Byte[] bytes = new Byte[TorrentFileInfo.PiecesLength + Program.messageMetadataSize];
-                    rnd.NextBytes(bytes);
+                    var bytes = EncodeWrongPiece(piece.index, type);
                     stream.Write(bytes, 0, bytes.Length);
                 }
             }
@@ -280,8 +278,7 @@ namespace TorrentClient
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(indexPeer), 0, message, 8, 4);
             message[12] = 3; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
-            Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
-
+            Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16); 
             return message;
         }
 
@@ -304,7 +301,30 @@ namespace TorrentClient
                 //Disconnect
             }
         }
-
+        public static byte[] EncodeWrongPiece(int index, byte type)
+        {
+            try
+            {
+                int length = TorrentFileInfo.PiecesLength + Program.messageMetadataSize;
+                byte[] message = new byte[length];
+                Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(index), 0, message, 0, 4);
+                Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.PiecesLength), 0, message, 4, 4);
+                Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(TorrentFileInfo.TorrentHash), 0, message, 8, 4);
+                message[12] = 1; // 1 - przyslana czesc, 0 - prosba o wyslanie czesci, 2 - prosba o wyslanie GUIDu, 3 - przyslanie GUIDu
+                Buffer.BlockCopy(Settings.ID.ToByteArray(), 0, message, 13, 16);
+                Guid guid = new Guid(Settings.ID.ToByteArray());
+                Random rnd = new Random();
+                Byte[] bytes = new Byte[TorrentFileInfo.PiecesLength];
+                rnd.NextBytes(bytes);
+                Buffer.BlockCopy(bytes, 0, message, Program.messageMetadataSize, bytes.Length);
+                return message;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return null;
+            }
+        }
         public static byte[] EncodePiece(Piece piece, byte type)
         {
             try
