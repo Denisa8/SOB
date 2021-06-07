@@ -22,7 +22,8 @@ namespace TorrentClient
         public byte[] buffer;
         private int counter = 0;
         private int counterRead = 0;
-        private int errorCounter = 0;  
+        private int errorCounter = 0;
+        public DateTime LastActive { get; set; } = DateTime.Now;
         
         public List<int> PieceRequestSent { get; set; } = new List<int>(); 
         /*private*/
@@ -102,6 +103,13 @@ namespace TorrentClient
                     Console.WriteLine("odczytano typ: " + type + " id: " + id + " l " + length);
                     counter++;
                     Console.WriteLine("bytes: " + bytes);
+
+
+                    var p = Program.Peers.ToList().Where(x => x.Value.GUID == guid).ToList();
+                    if(p.Count() > 0)
+                        p[0].Value.LastActive = DateTime.Now;
+                    
+
                     if (type == 1)
                     {
                         if (torrentHash != TorrentFileInfo.TorrentHash)

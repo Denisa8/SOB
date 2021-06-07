@@ -57,7 +57,8 @@ namespace TorrentClient
         public static void AddPeer(Peer peer, int p)
         {
             Random rand = new Random();
-            peer.ConnectToPeer(p); 
+            peer.ConnectToPeer(p);
+            peer.LastActive = DateTime.Now;
             if (!Program.Peers.TryAdd(PeerCount, peer))
                 peer.Disconnect();
             if (peer.GUID == Guid.Empty)
@@ -107,8 +108,8 @@ namespace TorrentClient
                  
                     List<int> pieces = new List<int>();
                     int pc = Settings.torrentFileInfo.GetSavedPiecesCount();
-                    
-                    for (int i=0;i<pc;i++)
+
+                    for (int i = 0; i < pc; i++)
                     {
                         Settings.ReadPieces[i] = true;
                         pieces.Add(i);
@@ -317,8 +318,30 @@ namespace TorrentClient
                         }
                     })).Start();
                     #endregion
-
-                    while (true)
+                    #region zarzadzanie peerami
+                    new Thread(new ThreadStart(() =>
+                    { 
+                        while(!Settings.isStopping)
+                        {
+                            Thread.Sleep(5000);
+                            var peers = Peers.ToList();
+                            foreach (KeyValuePair<int, Peer> peer in peers)
+                            {
+                                var lastActiveInMinutes = DateTime.Now - peer.Value.LastActive;
+                                if (lastActiveInMinutes.TotalMinutes > Settings.peerTimeoutInMinutes) // jezeli peer jest nieaktywny przez zadany czas 
+                                {
+                                    Console.WriteLine("peer " + peer.Value.GUID + " timed out");
+                                    if (Peers.TryRemove(peer.Key, out Peer p))
+                                    {
+                                        peer.Value.Disconnect(); // rozlacz peera
+                                        Console.WriteLine("peer " + p.GUID + " disconnected");
+                                    }
+                                }
+                            }
+                        }
+                    })).Start();
+                        #endregion
+                        while (true)
                     { }
                     //p1.ConnectToPeer(1301);
                     //while (!peer.IsConnected && !Peers.Any()) { }
