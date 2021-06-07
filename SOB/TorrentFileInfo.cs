@@ -12,13 +12,13 @@ namespace TorrentClient
         public static int TorrentHash { get; set; }
         public static byte[][] PieceHashes { get; set; }
         public int PiecesCount { get; set; }
-        public int PiecesLength { get; set; }
+        public static int PiecesLength { get; set; }
         public string PathSource { get; set; }
         public string PathNew { get; set; }
 
         static object lockObject = new object();
 
-        public bool CheckReceivedPiece(byte[] bytes, int index, int receivedBytes)
+        public static bool CheckReceivedPiece(byte[] bytes, int index, int receivedBytes)
         {
             if (receivedBytes > PiecesLength)
             {

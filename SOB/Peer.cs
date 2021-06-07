@@ -77,8 +77,8 @@ namespace TorrentClient
             }
             stream = client.GetStream();
             Settings.isStopping = false;
-            buffer = new byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
-            stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
+            buffer = new byte[TorrentFileInfo.PiecesLength + Program.messageMetadataSize];
+            stream.BeginRead(buffer, 0, TorrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
         }
         private void HandleRead(IAsyncResult ar)
         {
@@ -89,7 +89,7 @@ namespace TorrentClient
                 if (bytes > 0)
                 {
                     Console.WriteLine("bytes: " + bytes);
-
+                    byte[] b;
                     int id = EndianBitConverter.Big.ToInt32(buffer, 0);
                     int length = EndianBitConverter.Big.ToInt32(buffer, 4);
                     int torrentHash = EndianBitConverter.Big.ToInt32(buffer, 8);
@@ -97,9 +97,12 @@ namespace TorrentClient
                     var idS = buffer.Skip(13).Take(16).ToArray();
                     Guid guid = new Guid(idS);
                     Console.WriteLine(Settings.ID);
-                    byte[] b = buffer.Skip(29).ToArray();
+                    if(length!=0)
+                        b = buffer.Skip(29).Take(length).ToArray();
+                    else
+                        b = buffer.Skip(29).Take(length).ToArray();
 
-                    buffer = new byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
+                    buffer = new byte[TorrentFileInfo.PiecesLength + Program.messageMetadataSize];
                     Console.WriteLine("odczytano typ: " + type + " id: " + id + " l " + length);
                     counter++;
                     Console.WriteLine("bytes: " + bytes);
@@ -127,7 +130,10 @@ namespace TorrentClient
                         else
                         {
                             Console.WriteLine("PieceIndex = " + id);
-                            var result = TorrentFileInfo.CheckPieceHash(b, id);
+                            if (id == 205)
+                                Console.WriteLine("test");
+                            var result = TorrentFileInfo.CheckReceivedPiece(b, id, b.Length);
+                                //TorrentFileInfo.CheckPieceHash(b, id);
                             if (!result)
                             {
 
@@ -214,7 +220,7 @@ namespace TorrentClient
             try
             {
                 stream = client.GetStream();
-                stream.BeginRead(buffer, 0, Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null);
+                stream.BeginRead(buffer, 0, TorrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null);
             }
             catch (Exception e)
             {
@@ -236,7 +242,7 @@ namespace TorrentClient
                 else
                 {
                     Random rnd = new Random();
-                    Byte[] bytes = new Byte[Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize];
+                    Byte[] bytes = new Byte[TorrentFileInfo.PiecesLength + Program.messageMetadataSize];
                     rnd.NextBytes(bytes);
                     stream.Write(bytes, 0, bytes.Length);
                 }
@@ -248,7 +254,7 @@ namespace TorrentClient
         } 
         public void SendGUIDRequest(int count)
         {
-            int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
+            int length = TorrentFileInfo.PiecesLength + Program.messageMetadataSize;
             byte[] message = new byte[length];
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 0, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
@@ -268,7 +274,7 @@ namespace TorrentClient
 
         public static byte[] EncodeGUIDResponse(int indexPeer)
         {
-            int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
+            int length = TorrentFileInfo.PiecesLength + Program.messageMetadataSize;
             byte[] message = new byte[length];
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 0, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);
@@ -281,7 +287,7 @@ namespace TorrentClient
 
         public void SendMessage(int index)
         {
-            int length = Settings.torrentFileInfo.PiecesLength + Program.messageMetadataSize;
+            int length = TorrentFileInfo.PiecesLength + Program.messageMetadataSize;
             byte[] message = new byte[length];
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(index), 0, message, 0, 4);
             Buffer.BlockCopy(EndianBitConverter.Big.GetBytes(0), 0, message, 4, 4);

@@ -83,7 +83,7 @@ namespace TorrentClient
                     if (torrent.AnnounceUrls != null)
                         Settings.torrentFileInfo.TrackerUrl = torrent.AnnounceUrls[0].FirstOrDefault();
                     TorrentFileInfo.TorrentHash = torrent.InfoHash.GetHashCode();
-                    Settings.torrentFileInfo.PiecesLength = torrent.PieceLength;
+                    TorrentFileInfo.PiecesLength = torrent.PieceLength;
                     Settings.torrentFileInfo.PiecesCount = torrent.Pieces.Count;
                     TorrentFileInfo.PieceHashes = new byte[Settings.torrentFileInfo.PiecesCount][];
                     //Settings.torrentFileInfo.ReadPieces =  //dołożyłam, aby sprawdzać, który kawałek dostaliśmy
