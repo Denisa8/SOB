@@ -24,10 +24,7 @@ namespace TorrentClient.Messages
             }          
             else
             {
-                Random rnd = new Random();
-                Byte[] bytes = new Byte[TorrentFileInfo.PiecesLength + Program.messageMetadataSize];
-                rnd.NextBytes(bytes);
-                Stream.Write(bytes, 0, bytes.Length);
+                  Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
             }
         }
     }

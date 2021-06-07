@@ -86,7 +86,7 @@ namespace TorrentClient
             try
             {
                 bytes = stream.EndRead(ar);
-                if (bytes > 0)
+                if (bytes > 0 && Settings.availablePeer)
                 {
                     Console.WriteLine("bytes: " + bytes);
                     byte[] b;

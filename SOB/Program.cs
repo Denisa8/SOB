@@ -144,64 +144,67 @@ namespace TorrentClient
                     {
                         while (!Settings.isStopping)
                         {
-                            Thread.Sleep(5000);
-                            Console.WriteLine("---- client.port: " + Settings.port);
-                            Console.WriteLine("Having " + Settings.ReadPieces.Where(ffs => ffs == true).Count() + " pieces");
+                            if (Settings.availablePeer)
+                            {
+                                Thread.Sleep(5000);
+                                Console.WriteLine("---- client.port: " + Settings.port);
+                                Console.WriteLine("Having " + Settings.ReadPieces.Where(ffs => ffs == true).Count() + " pieces");
 
-                            if (Settings.ReadPieces.Where(x => x == false).Count() == 0) // klient posiada wszystkie czesci
-                            {
-                                Thread.Sleep(10000); // narazie nie wiem co z tym zrobic. teraz jak wszystkie czesci sa pobrane to ten watek jest usypiany
-                                continue;
-                            } 
-                            for (int i = 0; i < Settings.ReadPieces.Length;)
-                            {
-                                if (Settings.ReadPieces[i] == false)
+                                if (Settings.ReadPieces.Where(x => x == false).Count() == 0) // klient posiada wszystkie czesci
                                 {
-                                    List<Peer> peersThatICanFinallySendRequestTo = new List<Peer>(); // Do tej listy zbierane sa wszystkie peery z danym kawalkiem
-                                    foreach (ConnectedPeer connectedPeer in AvailablePeersOnTracker)
+                                    Thread.Sleep(10000); // narazie nie wiem co z tym zrobic. teraz jak wszystkie czesci sa pobrane to ten watek jest usypiany
+                                    continue;
+                                }
+                                for (int i = 0; i < Settings.ReadPieces.Length;)
+                                {
+                                    if (Settings.ReadPieces[i] == false)
                                     {
-                                        if (connectedPeer.Files.TryGetValue(TorrentFileInfo.TorrentHash.ToString(), out FileTorrent fileTorrent))
+                                        List<Peer> peersThatICanFinallySendRequestTo = new List<Peer>(); // Do tej listy zbierane sa wszystkie peery z danym kawalkiem
+                                        foreach (ConnectedPeer connectedPeer in AvailablePeersOnTracker)
                                         {
-                                            if (fileTorrent.Pieces.Contains(i)) // ustalenie czy dany peer ma kawalek
+                                            if (connectedPeer.Files.TryGetValue(TorrentFileInfo.TorrentHash.ToString(), out FileTorrent fileTorrent))
                                             {
-                                                foreach (KeyValuePair<int, Peer> pair in Peers)
+                                                if (fileTorrent.Pieces.Contains(i)) // ustalenie czy dany peer ma kawalek
                                                 {
-                                                    if (((pair.Value.GUID == connectedPeer.ID) && (!bannedPeers.Contains(pair.Value.GUID)) && (!pair.Value.PieceRequestSent.Contains(i))))
-                                                        peersThatICanFinallySendRequestTo.Add(pair.Value);
+                                                    foreach (KeyValuePair<int, Peer> pair in Peers)
+                                                    {
+                                                        if (((pair.Value.GUID == connectedPeer.ID) && (!bannedPeers.Contains(pair.Value.GUID)) && (!pair.Value.PieceRequestSent.Contains(i))))
+                                                            peersThatICanFinallySendRequestTo.Add(pair.Value);
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                    if (peersThatICanFinallySendRequestTo.Count == 0) // jesli nie ma zadnych dostepnych peerow 
-                                    {
-                                        //Console.WriteLine("No peers with needed piece");
-                                        var x = (DateTime.Now - LastSentRequest).TotalMinutes;
-                                        if (x > 2) // oraz ostatni request zostal wyslany 2 minuty temu
+                                        if (peersThatICanFinallySendRequestTo.Count == 0) // jesli nie ma zadnych dostepnych peerow 
                                         {
-                                            foreach (KeyValuePair<int, Peer> p in Peers) // resetuj status wyslania requestu o czesc u kazdego polaczonego peera 
+                                            //Console.WriteLine("No peers with needed piece");
+                                            var x = (DateTime.Now - LastSentRequest).TotalMinutes;
+                                            if (x > 2) // oraz ostatni request zostal wyslany 2 minuty temu
                                             {
-                                                if (p.Value.PieceRequestSent.Contains(i))
-                                                    p.Value.PieceRequestSent.Remove(i);
+                                                foreach (KeyValuePair<int, Peer> p in Peers) // resetuj status wyslania requestu o czesc u kazdego polaczonego peera 
+                                                {
+                                                    if (p.Value.PieceRequestSent.Contains(i))
+                                                        p.Value.PieceRequestSent.Remove(i);
+                                                }
                                             }
+                                        }
+                                        else
+                                        {
+                                            Random r = new Random();
+                                            var index = r.Next(peersThatICanFinallySendRequestTo.Count);
+                                            Console.WriteLine("Sending request to peer with index: " + index + " for piece: " + i);
+                                            peersThatICanFinallySendRequestTo[index].SendMessage(i); // wysylanie zapytania do losowego peera z listy, zeby rozkladac ruch
+                                            peersThatICanFinallySendRequestTo[index].PieceRequestSent.Add(i);
+                                            LastSentRequest = DateTime.Now;
+                                        }
+                                        if (Settings.ReadPieces[i] == true)
+                                        {
+                                            Console.WriteLine("Piece " + i + " aquired. Moving to the next piece.");
+                                            i++;
                                         }
                                     }
                                     else
-                                    {
-                                        Random r = new Random();
-                                        var index = r.Next(peersThatICanFinallySendRequestTo.Count);
-                                        Console.WriteLine("Sending request to peer with index: " + index + " for piece: " + i);
-                                        peersThatICanFinallySendRequestTo[index].SendMessage(i); // wysylanie zapytania do losowego peera z listy, zeby rozkladac ruch
-                                        peersThatICanFinallySendRequestTo[index].PieceRequestSent.Add(i);
-                                        LastSentRequest = DateTime.Now;
-                                    }
-                                    if (Settings.ReadPieces[i] == true)
-                                    {
-                                        Console.WriteLine("Piece " + i + " aquired. Moving to the next piece.");
                                         i++;
-                                    }
                                 }
-                                else
-                                    i++;
                             }
                         }
                     })).Start();
@@ -211,15 +214,18 @@ namespace TorrentClient
                     {
                         while (!Settings.isStopping)
                         {
-                            if (Outgoing.Count == 0)
+                            if (Settings.availablePeer)
                             {
-                                Thread.Sleep(1000);
-                                continue;
+                                if (Outgoing.Count == 0)
+                                {
+                                    Thread.Sleep(1000);
+                                    continue;
+                                }
+                                var pendingMessage = Outgoing[0];
+                                Console.WriteLine("Sending ID: " + pendingMessage.PieceIndex + " from outgoing.");
+                                pendingMessage.Send();
+                                Outgoing.Remove(pendingMessage);
                             }
-                            var pendingMessage = Outgoing[0];
-                            Console.WriteLine("Sending ID: " + pendingMessage.PieceIndex + " from outgoing.");
-                            pendingMessage.Send();
-                            Outgoing.Remove(pendingMessage);
                         }
                     })).Start();
                     #endregion
@@ -228,6 +234,7 @@ namespace TorrentClient
                     {
                         while (!Settings.isStopping)
                         {
+                            if (Settings.availablePeer) {
                             Console.WriteLine("Incoming.Count = " + Incoming.Count);
                             if (Incoming.Count == 0)
                             {
@@ -321,6 +328,7 @@ namespace TorrentClient
                                 Console.WriteLine("Odebrano niepoprawna wiadomosc");
                             }
                             Incoming.Remove(pendingMessage);
+                            }
                         }
                     })).Start();
                     #endregion
