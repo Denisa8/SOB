@@ -18,7 +18,7 @@ namespace TorrentClient
     public static bool isStopping = false;
     public static TorrentFileInfo torrentFileInfo = new TorrentFileInfo();
     public static readonly int maxErrorCount = 1; // Po odebraniu X niepoprawnych wiadomosci od peera, peer zostanie zbanowany 
-    public static readonly int peerTimeoutInMinutes = 1; // Po X minutach od ostatniej odpowiedzi od peera, peer zostaje rozlaczony
+    public static readonly int peerTimeoutInMinutes = 20; // Po X minutach od ostatniej odpowiedzi od peera, peer zostaje rozlaczony
     public static bool[] ReadPieces { get; set; }
 
   }

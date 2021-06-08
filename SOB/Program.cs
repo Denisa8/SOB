@@ -84,8 +84,8 @@ namespace TorrentClient
                         Settings.torrentFileInfo.TrackerUrl = torrent.AnnounceUrls[0].FirstOrDefault();
                     TorrentFileInfo.TorrentHash = torrent.InfoHash.GetHashCode();
                     TorrentFileInfo.PiecesLength = torrent.PieceLength;
-                    Settings.torrentFileInfo.PiecesCount = torrent.Pieces.Count;
-                    TorrentFileInfo.PieceHashes = new byte[Settings.torrentFileInfo.PiecesCount][];
+                    TorrentFileInfo.PiecesCount = torrent.Pieces.Count;
+                    TorrentFileInfo.PieceHashes = new byte[TorrentFileInfo.PiecesCount][];
                     //Settings.torrentFileInfo.ReadPieces =  //dołożyłam, aby sprawdzać, który kawałek dostaliśmy
                     Settings.torrentFileInfo.PathSource = PathSource;
                     Settings.torrentFileInfo.PathNew = PathNew;
@@ -97,7 +97,7 @@ namespace TorrentClient
                     #endregion
                     #region Utworzenie peera
                     //peer = new Peer();
-                    Settings.ReadPieces = new bool[Settings.torrentFileInfo.PiecesCount];
+                    Settings.ReadPieces = new bool[TorrentFileInfo.PiecesCount];
                     EnablePeerConnections(Settings.port);
                     #endregion
                     #region Tracker
@@ -115,7 +115,7 @@ namespace TorrentClient
                         pieces.Add(i);
                     }
 
-                    FileTorrent file = new FileTorrent(TorrentFileInfo.TorrentHash.ToString(), pieces, pieces.Count);
+                    FileTorrent file = new FileTorrent(TorrentFileInfo.TorrentHash.ToString(), pieces, TorrentFileInfo.PiecesCount);
                     Files.TryAdd(TorrentFileInfo.TorrentHash.ToString(), file);
 
 
@@ -384,13 +384,13 @@ namespace TorrentClient
 
         private static void CheckArguments(string[] args)
         {
+            torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent";
             if (args.Length == 0) // jesli nie ma podanych argumentow to przyjmij domyslne wartosci
             {/*
                torrentsPath = @"D:\a\Bees.torrent";
               PathSource = @"D:\a\Bees.txt";
               PathNew = @"D:\a\Downloaded\Bees.torrent";*/
-                Settings.port = 1301;
-                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent"; 
+                Settings.port = 1301; 
                 PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia5.zip";
                 PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia5.zip"; 
 
@@ -407,9 +407,9 @@ namespace TorrentClient
                PathSource = @"D:\a\Bees.txt";
                PathNew = @"D:\a\Downloaded\Bees.torrent"; */
                 Settings.port = int.Parse(args[0]);
-                torrentsPath = @"C:\Users\Admin\Desktop\wyklady2.torrent"; 
                 PathSource = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wyklady.zip";
                 PathNew = @"C:\Users\Admin\Desktop\SOB - projekt\plik\wykladyKopia.zip";
+                Console.WriteLine(PathSource);
 
                 //public static string torrentsPath = "wyklady2.torrent";
                 //public static string PathSource = @"C:\Users\Admin\Desktop\wyklady.zip";
@@ -431,17 +431,15 @@ namespace TorrentClient
             }
             try
             {
-                if (String.IsNullOrEmpty(args[2]))
+                if (String.IsNullOrEmpty(args[1]))
                 {
                     Console.WriteLine("Niepoprawna ścieżka do folderu");
                     return;
                 }
                 else
-                {
-                    torrentsPath = args[1];
-                    PathSource = Path.Combine(args[2], "Bees.txt");
-                    PathNew = Path.Combine(args[2], "Downloads", "Bees.txt");
-                    torrentsPath = Path.Combine(args[1], "Bees.torrent");
+                { 
+                    PathSource = PathNew = Path.Combine(args[1],  String.Format("w{0}.zip", Settings.port));
+                    Console.WriteLine(PathSource);
                 }
 
             }

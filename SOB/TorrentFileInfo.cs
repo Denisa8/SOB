@@ -11,7 +11,7 @@ namespace TorrentClient
         public int TorrentsPath { get; set; }
         public static int TorrentHash { get; set; }
         public static byte[][] PieceHashes { get; set; }
-        public int PiecesCount { get; set; }
+        public static int PiecesCount { get; set; }
         public static int PiecesLength { get; set; }
         public string PathSource { get; set; }
         public string PathNew { get; set; }
