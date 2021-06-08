@@ -70,7 +70,7 @@ namespace TorrentClient
                 decimal r1 = Decimal.Ceiling((decimal)numBytes / (decimal)PiecesLength); // czesci pobierane sa po polei wg indeksu, wiec rozmiar pliku na dysku / rozmiar czesci = ilosc posiadanych czesci
             
             return (int)r1;
-        }return 0;
+        }
         }
 
         public Piece ReadFilePiece(int index)
@@ -121,15 +121,15 @@ namespace TorrentClient
                                 break;
                             var hash = Hash(bytes);
                             var result = hash.SequenceEqual(PieceHashes[0]);
-                            if (!result)
-                            {
-                                Console.WriteLine("Nie otrzymano prawidłowego fragmentu.");
-                                return;
-                            }
-                            else
-                            {
-                                Console.WriteLine("Otrzymano prawidłowy fragment.");
-                            }
+                            //if (!result)
+                            //{
+                            //    Console.WriteLine("Nie otrzymano prawidłowego fragmentu.");
+                            //    return;
+                            //}
+                            //else
+                            //{
+                            //    Console.WriteLine("Otrzymano prawidłowy fragment.");
+                            //}
                             numBytesRead += n;
                             numBytesToRead -= n;
                         }

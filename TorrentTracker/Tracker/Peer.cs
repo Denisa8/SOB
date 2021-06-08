@@ -49,9 +49,7 @@ namespace TorrentTracker.Tracker
         public void CheckAvailable()
         {
             if (!client.Connected)
-                Available = false;
-            else
-                Available = true;
+                Available = false; 
             //var s = client.GetStream();
             //try
             //{
