@@ -18,16 +18,23 @@ namespace TorrentClient.Messages
         public int IndexPeer { get; set; }
         public void Send()
         {
-            if (Stream.CanWrite)
+            try
             {
-                if (Settings.sendCorrectData || Type == 3) // To zeby sie GUID poprawnie zawsze wysylal
+                if (Stream.CanWrite)
                 {
-                    Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
+                    if (Settings.sendCorrectData || Type == 3) // To zeby sie GUID poprawnie zawsze wysylal
+                    {
+                        Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
+                    }
+                    else
+                    {
+                        Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
+                    }
                 }
-                else
-                {
-                    Stream.Write(EncodedMessage, 0, EncodedMessage.Length);
-                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Błąd przy wysyłaniu wiadomości do peera: " + Guid +"\n");
             }
         }
     }

@@ -7,7 +7,7 @@
           <th>Peer id</th>
           <th>Status</th>
           <th nzRight>Włącz/Wyłącz peer</th>
-          <th nzRight>Zacznij wysyłać błędne dane</th>
+          <th nzRight>Dane</th>
         </tr>
       </thead>
 
@@ -22,9 +22,10 @@
             Niedostępny
           </td>
 
-          <td *ngIf="data.available"><a id={{data.id}} (click)="changeAvailable($event,data)">Wyłącz</a></td>
+          <td *ngIf="data.available"><a id="{{data.id}}" (click)="changeAvailable($event,data)">Wyłącz</a></td>
           <td *ngIf="!data.available"><a id="{{data.id}}" (click)="changeAvailable($event,data)">Włącz</a></td>
-          <td><a id="{{data.id}}" (click)="sendBadData($event)">Wysyłaj błędne dane</a></td>
+          <td *ngIf="data.correctSendData"><a id="{{data.id}}" (click)="sendBadData($event,data)">Poprawne</a></td>
+          <td *ngIf="!data.correctSendData"><a id="{{data.id}}" (click)="sendBadData($event,data)">Błędne</a></td>
         </tr>
         
         <tr [nzExpand]="expandSet.has(data.id)">

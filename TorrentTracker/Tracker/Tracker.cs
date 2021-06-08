@@ -19,7 +19,7 @@ namespace TorrentTracker.Tracker
         private CancellationTokenSource cts;
         private static Tracker tracker;
         private Timer timer;
-
+        private int counter = 0;
         private Tracker() { }
 
         private Tracker(string ip, int port)
@@ -35,13 +35,11 @@ namespace TorrentTracker.Tracker
 
         private void CheckAvailable(object state)
         {
-            foreach (var kv in Peers)
+            if (Peers.Count > 0)
             {
-                try
-                {
-                    kv.Value.CheckAvailable();
-                }
-                catch (Exception) { }
+                Peers.Values.ToList()[counter].CheckAvailable();
+                counter++;
+                counter = counter % Peers.Count;
             }
             timer.Change(1000, Timeout.Infinite);
         }
@@ -79,6 +77,7 @@ namespace TorrentTracker.Tracker
         {
             if (!Peers.ContainsKey(guid)) throw new Exception("Nie istnieje peer o ID: "+guid);
             Peers[guid].InformPeerAboutAvailable(available);
+            Peers[guid].Available = available;
         }
 
         public void ChangeSendDataPeer(Guid guid, bool correctData)

@@ -48,14 +48,17 @@ namespace TorrentTracker.Tracker
 
         public void CheckAvailable()
         {
-            Available = false;
-            var s = client.GetStream();
-            try
-            {
-                if (faultCheckAvailable < 5)
-                    Tools.Send(s, new TransportObject(new CheckAvailablePeer()), 1000);
-            }
-            catch (IOException) { faultCheckAvailable++; }
+            if (!client.Connected)
+                Available = false;
+            else
+                Available = true;
+            //var s = client.GetStream();
+            //try
+            //{
+            //    if (faultCheckAvailable < 5)
+            //        Tools.Send(s, new TransportObject(new CheckAvailablePeer()), 1000);
+            //}
+            //catch (IOException) { faultCheckAvailable++; }
         }
 
         public void InformAboutNewConnectedPeer(Peer peer)

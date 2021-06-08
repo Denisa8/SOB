@@ -76,7 +76,7 @@ export class ContentTableComponent {
           console.log('Internal Server Error - 500');
         }
       );  
-    }, 1000);
+    }, 3000);
   });}
 
   changeAvailable(event: Event, data: PeerDTO) {
@@ -85,11 +85,11 @@ export class ContentTableComponent {
     this.connectService.changeAvailable(data.id, !data.available); 
   }
 
-  sendBadData(event: Event) {
+  sendBadData(event: Event,data: PeerDTO) {
     let elementid: string = (event.target as Element).id;
     let correctdata: boolean = this.getCorrectSendDataByid(elementid);
 
-    this.connectService.sendBadData(elementid, !correctdata);
+    this.connectService.sendBadData(data.id, !data.correctSendData);
   }
 
   getAvailableByid(elementid: string): boolean {

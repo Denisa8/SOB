@@ -16,13 +16,11 @@ namespace TorrentClient
         private TcpClient client { get; set; }
         public IPEndPoint EndPoint { get; private set; }
         public NetworkStream stream { get; set; }
-        public bool IsConnected;
-        public int Port { get { return EndPoint.Port; } }
+        public bool IsConnected; 
         /*private*/
-        public byte[] buffer;
-        private int counter = 0;
-        private int counterRead = 0;
+        public byte[] buffer; 
         private int errorCounter = 0;
+        private int counter = 0;
         public DateTime LastActive { get; set; } = DateTime.Now;
         
         public List<int> PieceRequestSent { get; set; } = new List<int>(); 
@@ -36,11 +34,7 @@ namespace TorrentClient
         {
             GUID = guid;
         }
-
-        public void ResetErrorCounter()
-        {
-            errorCounter = 0;
-        }
+         
         public void IncreaseErrorCounter(Guid GUID)
         {
             errorCounter++;
@@ -58,27 +52,34 @@ namespace TorrentClient
         }
         public void ConnectToPeer(int portPeer)
         {
-            IPAddress hostadd = IPAddress.Parse("127.0.0.1");
-            EndPoint = new IPEndPoint(hostadd, portPeer);
-            if (client == null)
-            {
-                client = new TcpClient();
-                try
+            try {
+                IPAddress hostadd = IPAddress.Parse("127.0.0.1");
+                EndPoint = new IPEndPoint(hostadd, portPeer);
+                if (client == null)
                 {
-                    client.Connect(EndPoint);
-                    IsConnected = true;
-                   
+                    client = new TcpClient();
+                    try
+                    {
+                        client.Connect(EndPoint);
+                        IsConnected = true;
+
+                    }
+                    catch (Exception e)
+                    {
+                        Disconnect();
+                        return;
+                    }
                 }
-                catch (Exception e)
-                {
-                    Disconnect();
-                    return;
-                }
+                stream = client.GetStream();
+                Settings.isStopping = false;
+                buffer = new byte[TorrentFileInfo.PiecesLength + Program.messageMetadataSize];
+                stream.BeginRead(buffer, 0, TorrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
             }
-            stream = client.GetStream();
-            Settings.isStopping = false;
-            buffer = new byte[TorrentFileInfo.PiecesLength + Program.messageMetadataSize];
-            stream.BeginRead(buffer, 0, TorrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null); //tutaj oczekuje asynchronicznie na jakieś kawałki pliku
+            catch(Exception e)
+            {
+                Console.WriteLine("Połączenie przerwane. ");
+                Disconnect();
+            }
         }
         private void HandleRead(IAsyncResult ar)
         {
@@ -213,18 +214,21 @@ namespace TorrentClient
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                //Disconnect();
+                Disconnect();
                 return;
             }
 
             try
             {
-                stream = client.GetStream();
-                stream.BeginRead(buffer, 0, TorrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null);
+                if (client.Connected)
+                {
+                    stream = client.GetStream();
+                    stream.BeginRead(buffer, 0, TorrentFileInfo.PiecesLength + Program.messageMetadataSize, new AsyncCallback(HandleRead), null);
+                }
             }
             catch (Exception e)
             {
-                //Disconnect();
+                Disconnect();
             }
         }
 
@@ -233,21 +237,24 @@ namespace TorrentClient
         {
             try
             {
-                if (Settings.sendCorrectData)
+                if (client.Connected)
                 {
-                    var bytes = EncodePiece(piece, type);
-                    //formatter.Serialize(stream, piece);  
-                    stream.Write(bytes, 0, bytes.Length);
-                }
-                else
-                {
-                    var bytes = EncodeWrongPiece(piece.index, type);
-                    stream.Write(bytes, 0, bytes.Length);
+                    if (Settings.sendCorrectData)
+                    {
+                        var bytes = EncodePiece(piece, type);
+                        //formatter.Serialize(stream, piece);  
+                        stream.Write(bytes, 0, bytes.Length);
+                    }
+                    else
+                    {
+                        var bytes = EncodeWrongPiece(piece.index, type);
+                        stream.Write(bytes, 0, bytes.Length);
+                    }
                 }
             }
             catch (Exception e)
             {
-                // Disconnect();
+                 Disconnect();
             }
         } 
         public void SendGUIDRequest(int count)
@@ -298,7 +305,7 @@ namespace TorrentClient
             }
             catch(Exception e)
             {
-                //Disconnect
+                Disconnect();
             }
         }
         public static byte[] EncodeWrongPiece(int index, byte type)
